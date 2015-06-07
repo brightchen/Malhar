@@ -1,7 +1,7 @@
 package com.datatorrent.demos.dimensions.generic;
 
 import com.datatorrent.api.LocalMode;
-import com.datatorrent.lib.util.ObjectMapperString;
+import com.datatorrent.common.util.ObjectMapperString;
 import org.apache.hadoop.conf.Configuration;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;

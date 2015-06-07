@@ -30,9 +30,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-
 import com.datatorrent.api.Context;
-import com.datatorrent.lib.util.NumberAggregate;
+import com.datatorrent.common.util.NumberAggregate;
 
 /**
  * Implementation of basic number counters.

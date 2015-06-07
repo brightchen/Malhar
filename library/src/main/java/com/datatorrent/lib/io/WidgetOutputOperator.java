@@ -28,14 +28,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.datatorrent.lib.util.PubSubMessageCodec;
-import com.datatorrent.lib.util.PubSubWebSocketClient;
-
 import com.datatorrent.api.BaseOperator;
 import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.DAG;
 import com.datatorrent.api.DefaultInputPort;
 import com.datatorrent.api.annotation.InputPortFieldAnnotation;
+import com.datatorrent.common.util.PubSubMessageCodec;
+import com.datatorrent.common.util.PubSubWebSocketClient;
+
 import java.lang.reflect.Array;
 
 /**
