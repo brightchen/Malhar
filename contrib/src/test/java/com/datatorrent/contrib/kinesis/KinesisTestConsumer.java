@@ -46,6 +46,9 @@ public class KinesisTestConsumer implements Runnable
   private int receiveCount = 0;
   // A latch object to notify the waiting thread that it's done consuming the message
   private CountDownLatch latch;
+  
+  protected static final int MAX_TRY_TIMES = 30;
+  
   private void createClient()
   {
     AWSCredentialsProvider credentials = new DefaultAWSCredentialsProviderChain();
@@ -87,8 +90,26 @@ public class KinesisTestConsumer implements Runnable
     DescribeStreamRequest describeRequest = new DescribeStreamRequest();
     describeRequest.setStreamName(streamName);
 
-    DescribeStreamResult describeResponse = client.describeStream(describeRequest);
-    final List<Shard> shards = describeResponse.getStreamDescription().getShards();
+    List<Shard> shards = null;
+    for( int i=0; i<MAX_TRY_TIMES; ++i )
+    {
+      try
+      {
+        DescribeStreamResult describeResponse = client.describeStream(describeRequest);
+        shards = describeResponse.getStreamDescription().getShards();
+      }
+      catch( Exception e )
+      {
+        logger.error( "get Stream description exception: ", e );
+      }
+      try
+      {
+        Thread.sleep(1000);
+      }
+      catch( Exception e )
+      {
+      }
+    }
     logger.debug("Inside consumer::run receiveCount= {}", receiveCount);
     while (isAlive ) {
       Shard shId = shards.get(0);
