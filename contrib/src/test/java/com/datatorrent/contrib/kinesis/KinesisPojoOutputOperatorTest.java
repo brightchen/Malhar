@@ -13,6 +13,7 @@ public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< Ki
     public EmployeeTupleGenerateOperator()
     {
       super( Employee.class );
+      setTupleNum(maxTuple);
     }
   }
   
@@ -39,6 +40,7 @@ public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< Ki
       tableInfo.setRowOrIdExpression( Employee.getRowExpression() );
       operator.setTableInfo( tableInfo );
     }
+    operator.setBatchProcessing(false);
     
     return operator;
   }

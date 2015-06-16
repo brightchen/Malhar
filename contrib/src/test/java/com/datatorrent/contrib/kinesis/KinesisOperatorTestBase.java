@@ -36,7 +36,7 @@ public class KinesisOperatorTestBase
   protected boolean hasMultiPartition = false;
   protected String streamNamePrefix= "StreamName-";
   protected String streamName = null ;
-  protected int shardCount = 2;
+  protected int shardCount = 1;
   protected transient AmazonKinesisClient client = null;
   protected transient AWSCredentialsProvider credentials = null;
 
@@ -65,7 +65,7 @@ public class KinesisOperatorTestBase
         streamRequest.setShardCount(shardCount);
         client.createStream(streamRequest);
   
-        logger.info( "create stream done." );
+        logger.info( "created stream {}.", streamName );
         Thread.sleep(30000);
         
         break;

@@ -1,5 +1,7 @@
 package com.datatorrent.contrib.model;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.InputOperator;
@@ -15,8 +17,10 @@ public abstract class PojoTupleGenerateOperator<T> implements InputOperator, Act
   protected final int DEFAULT_TUPLE_NUM = 10000;
   public final transient DefaultOutputPort<T> outputPort = new DefaultOutputPort<T>();
   
+  private int tupleNum = DEFAULT_TUPLE_NUM;
   private TupleGenerator<T> tupleGenerator = null;
   private Class<T> tupleClass;
+  private AtomicInteger emitedTuples = new AtomicInteger(0);
 
   public PojoTupleGenerateOperator( Class<T> tupleClass )
   {
@@ -56,17 +60,27 @@ public abstract class PojoTupleGenerateOperator<T> implements InputOperator, Act
   @Override
   public void emitTuples()
   {
-    for (int i = 0; i<getTupleNum(); ++i ) 
+    final int theTupleNum = getTupleNum();
+    
+    while(true)
     {
+      int count = emitedTuples.addAndGet(1);
+      if( count > theTupleNum )
+        return;
+    
       outputPort.emit (getNextTuple() );
     }
   }
   
-  protected int getTupleNum()
+  public int getTupleNum()
   {
-    return DEFAULT_TUPLE_NUM;
+    return tupleNum;
   }
-
+  public void setTupleNum( int tupleNum )
+  {
+    this.tupleNum = tupleNum;
+  }
+  
   protected T getNextTuple()
   {
     if( tupleGenerator == null )

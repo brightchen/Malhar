@@ -26,7 +26,9 @@ public class KinesisStringOutputOperatorTest extends KinesisOutputOperatorTest< 
   @Override
   protected KinesisStringOutputOperator addTestingOperator(DAG dag)
   {
-    return dag.addOperator("KinesisMessageProducer", KinesisStringOutputOperator.class );
+    KinesisStringOutputOperator operator = dag.addOperator("KinesisMessageProducer", KinesisStringOutputOperator.class );
+
+    return operator;
   }
 
   
@@ -71,11 +73,9 @@ public class KinesisStringOutputOperatorTest extends KinesisOutputOperatorTest< 
         {
           try {
             int i = 0;
-            while (dataGeneratorThread != null && i < KinesisStringOutputOperatorTest.maxTuple) {
+            while (dataGeneratorThread != null && i < maxTuple) {
               stringBuffer.put("testString " + (++i));
-              KinesisStringOutputOperatorTest.tupleCount++;
             }
-            stringBuffer.put(KinesisOperatorTestBase.END_TUPLE);
           }
           catch (Exception ie) {
             throw new RuntimeException(ie);

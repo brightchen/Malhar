@@ -28,6 +28,10 @@ import com.datatorrent.common.util.Pair;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +48,7 @@ import java.util.List;
  */
 public abstract class AbstractKinesisOutputOperator<V, T> implements Operator
 {
+  private static final Logger logger = LoggerFactory.getLogger( AbstractKinesisOutputOperator.class );
   protected String streamName;
   @NotNull
   private String accessKey;
@@ -142,6 +147,7 @@ public abstract class AbstractKinesisOutputOperator<V, T> implements Operator
           if(putRecordsRequestEntryList.size() == batchSize)
           {
             flushRecords();
+            logger.debug( "flushed {} records.", batchSize );
           }
           addRecord(tuple);
 
@@ -153,8 +159,10 @@ public abstract class AbstractKinesisOutputOperator<V, T> implements Operator
           requestRecord.setData(ByteBuffer.wrap(getRecord(keyValue.second)));
 
           client.putRecord(requestRecord);
+          
         }
         sendCount++;
+        logger.debug( "=====put one record. total put records {}.", sendCount );
       } catch (AmazonClientException e) {
         throw new RuntimeException(e);
       }
@@ -182,7 +190,9 @@ public abstract class AbstractKinesisOutputOperator<V, T> implements Operator
       putRecordsRequest.setRecords(putRecordsRequestEntryList);
       client.putRecords(putRecordsRequest);
       putRecordsRequestEntryList.clear();
+      logger.debug( "Records flushed." );
     } catch (AmazonClientException e) {
+      logger.warn( "PutRecordsRequest exception.", e );
       throw new RuntimeException(e);
     }
   }
