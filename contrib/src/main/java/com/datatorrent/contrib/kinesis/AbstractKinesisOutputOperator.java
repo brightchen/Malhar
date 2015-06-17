@@ -140,35 +140,42 @@ public abstract class AbstractKinesisOutputOperator<V, T> implements Operator
     @Override
     public void process(T tuple)
     {
-      // Send out single data
-      try {
-        if(isBatchProcessing)
-        {
-          if(putRecordsRequestEntryList.size() == batchSize)
-          {
-            flushRecords();
-            logger.debug( "flushed {} records.", batchSize );
-          }
-          addRecord(tuple);
-
-        } else {
-          Pair<String, V> keyValue = tupleToKeyValue(tuple);
-          PutRecordRequest requestRecord = new PutRecordRequest();
-          requestRecord.setStreamName(streamName);
-          requestRecord.setPartitionKey(keyValue.first);
-          requestRecord.setData(ByteBuffer.wrap(getRecord(keyValue.second)));
-
-          client.putRecord(requestRecord);
-          
-        }
-        sendCount++;
-        logger.debug( "=====put one record. total put records {}.", sendCount );
-      } catch (AmazonClientException e) {
-        throw new RuntimeException(e);
-      }
+      processTuple( tuple );
     }
+    
   };
 
+  public void processTuple(T tuple)
+  {
+    // Send out single data
+    try {
+      if(isBatchProcessing)
+      {
+        if(putRecordsRequestEntryList.size() == batchSize)
+        {
+          flushRecords();
+          logger.debug( "flushed {} records.", batchSize );
+        }
+        addRecord(tuple);
+
+      } else {
+        Pair<String, V> keyValue = tupleToKeyValue(tuple);
+        PutRecordRequest requestRecord = new PutRecordRequest();
+        requestRecord.setStreamName(streamName);
+        requestRecord.setPartitionKey(keyValue.first);
+        requestRecord.setData(ByteBuffer.wrap(getRecord(keyValue.second)));
+
+        client.putRecord(requestRecord);
+        
+      }
+      sendCount++;
+      logger.debug( "=====put one record. total put records {}.", sendCount );
+    } catch (AmazonClientException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  
   private void addRecord(T tuple)
   {
     try {

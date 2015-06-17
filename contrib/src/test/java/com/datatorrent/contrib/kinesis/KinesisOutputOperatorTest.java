@@ -40,7 +40,7 @@ public abstract class KinesisOutputOperatorTest< O extends AbstractKinesisOutput
   private static final Logger logger = LoggerFactory.getLogger(KinesisOutputOperatorTest.class);
   //protected static int tupleCount = 0;
   protected static final int maxTuple = 20;
-  private static CountDownLatch doneLatch;
+  protected CountDownLatch doneLatch;
 
   private boolean enableConsumer = true;
   
@@ -51,6 +51,7 @@ public abstract class KinesisOutputOperatorTest< O extends AbstractKinesisOutput
     super.beforeTest();
   }
 
+  
   /**
    * Test AbstractKinesisOutputOperator (i.e. an output adapter for Kinesis, aka producer).
    * This module sends data into an ActiveMQ message bus.
@@ -62,7 +63,7 @@ public abstract class KinesisOutputOperatorTest< O extends AbstractKinesisOutput
    */
   @Test
   @SuppressWarnings({"SleepWhileInLoop", "empty-statement", "rawtypes"})
-  public void testKinesieOutputOperator() throws Exception
+  public void testKinesisOutputOperator() throws Exception
   {
     // Setup a message listener to receive the message
     KinesisTestConsumer listener = null;
@@ -105,9 +106,9 @@ public abstract class KinesisOutputOperatorTest< O extends AbstractKinesisOutput
     final LocalMode.Controller lc = lma.getController();
     lc.runAsync();
 
-    int sleepTime = 1000;
+    int sleepTime = 10000;
     if( doneLatch != null )
-      doneLatch.await(30, TimeUnit.SECONDS);
+      doneLatch.await(300, TimeUnit.SECONDS);
     else
     {
       sleepTime = 60000;

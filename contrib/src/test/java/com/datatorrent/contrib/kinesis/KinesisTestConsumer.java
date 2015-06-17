@@ -85,8 +85,31 @@ public class KinesisTestConsumer implements Runnable
     return new String(bytes);
   }
 
+
+   
   @Override
   public void run()
+  {
+    String iterator = prepareIterator();
+    
+    while (isAlive ) 
+    {
+      iterator = processNextIterator(iterator);
+      
+      if( doneLatch != null )
+        doneLatch.countDown();
+      
+      //sleep at least 1 second to avoid exceeding the limit on getRecords frequency
+      try
+      {
+        Thread.sleep(1000);
+      }catch( Exception e ){}
+    }
+    logger.debug("DONE consuming");
+  }
+
+  
+  public String prepareIterator()
   {
     DescribeStreamRequest describeRequest = new DescribeStreamRequest();
     describeRequest.setStreamName(streamName);
@@ -98,7 +121,12 @@ public class KinesisTestConsumer implements Runnable
       {
         DescribeStreamResult describeResponse = client.describeStream(describeRequest);
         shards = describeResponse.getStreamDescription().getShards();
-        break;
+        if( shards.isEmpty() )
+        {
+          logger.warn( "shards is empty" );
+        }
+        else
+          break;
       }
       catch( Exception e )
       {
@@ -120,33 +148,27 @@ public class KinesisTestConsumer implements Runnable
 
     iteratorRequest.setShardIteratorType("TRIM_HORIZON");
     GetShardIteratorResult iteratorResponse = client.getShardIterator(iteratorRequest);
-    String iterator = iteratorResponse.getShardIterator();
-
+    
+    return iteratorResponse.getShardIterator();
+  }
+  
+  public String processNextIterator( String iterator )
+  {
     GetRecordsRequest getRequest = new GetRecordsRequest();
     getRequest.setLimit(1000);
     
-    while (isAlive ) {
-      
-      getRequest.setShardIterator(iterator);
-      //call "get" operation and get everything in this shard range
-      GetRecordsResult getResponse = client.getRecords(getRequest);
-      
-      iterator = getResponse.getNextShardIterator();
-      
-      List<Record> records = getResponse.getRecords();
-      processResponseRecords( records );
-      
-      if( doneLatch != null )
-        doneLatch.countDown();
-      
-      //sleep at least 1 second to avoid exceeding the limit on getRecords frequency
-      try
-      {
-        Thread.sleep(1000);
-      }catch( Exception e ){}
-    }
-    logger.debug("DONE consuming");
+    getRequest.setShardIterator(iterator);
+    //call "get" operation and get everything in this shard range
+    GetRecordsResult getResponse = client.getRecords(getRequest);
+    
+    iterator = getResponse.getNextShardIterator();
+    
+    List<Record> records = getResponse.getRecords();
+    processResponseRecords( records );
+    
+    return iterator;
   }
+  
 
   protected boolean shouldProcessRecord = true;
   protected void processResponseRecords( List<Record> records )

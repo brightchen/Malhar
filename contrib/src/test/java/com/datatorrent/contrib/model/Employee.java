@@ -29,6 +29,8 @@ public class Employee
   private int age;
   private String address;
 
+  public Employee(){}
+  
   public Employee(long rowId)
   {
     this(rowId, "name" + rowId, (int) rowId, "address" + rowId);
@@ -57,12 +59,12 @@ public class Employee
     this.name = name;
   }
 
-  public int getAge()
+  public Integer getAge()
   {
     return age;
   }
 
-  public void setAge(int age)
+  public void setAge( Integer age)
   {
     this.age = age;
   }
@@ -77,4 +79,36 @@ public class Employee
     this.address = address;
   }
 
+  public boolean outputFieldsEquals( Employee other )
+  {
+    if( other == null )
+      return false;
+    if( !fieldEquals( getName(), other.getName() ) )
+      return false;
+    if( !fieldEquals( getAge(), other.getAge() ) )
+      return false;
+    if( !fieldEquals( getAddress(), other.getAddress() ) )
+      return false;
+    return true;
+  }
+  
+  public boolean completeEquals( Employee other )
+  {
+    if( other == null )
+      return false;
+    if( !outputFieldsEquals( other ) )
+      return false;
+    if( !fieldEquals( getRow(), other.getRow() ) )
+      return false;
+    return true;
+  }
+  
+  public <T> boolean fieldEquals( T v1, T v2 )
+  {
+    if( v1 == null && v2 == null )
+      return true;
+    if( v1 == null || v2 == null )
+      return false;
+    return v1.equals( v2 );
+  }
 }

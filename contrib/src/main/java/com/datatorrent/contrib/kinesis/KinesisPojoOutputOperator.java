@@ -39,7 +39,7 @@ public class KinesisPojoOutputOperator extends AbstractKinesisOutputOperator<byt
     if (fieldValueGenerator == null) {
       fieldValueGenerator = FieldValueGenerator.getFieldValueGenerator(tuple.getClass(), fieldsInfo);
     }
-    return new Pair< String, byte[]>( key, fieldValueGenerator.getSerializedObject(tuple) );
+    return new Pair< String, byte[]>( key, fieldValueGenerator.serializeObject(tuple) );
   }
 
 
