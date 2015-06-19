@@ -1,3 +1,20 @@
+/**
+ * 
+ * Copyright (c) 2015 DataTorrent, Inc. ALL Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package com.datatorrent.contrib.kinesis;
 
 import java.nio.ByteBuffer;
@@ -12,14 +29,14 @@ import com.datatorrent.api.DAG;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.contrib.util.FieldInfo;
 import com.datatorrent.contrib.util.FieldValueGenerator;
-import com.datatorrent.contrib.util.PojoTupleGenerateOperator;
+import com.datatorrent.contrib.util.POJOTupleGenerateOperator;
 import com.datatorrent.contrib.util.TableInfo;
 import com.datatorrent.contrib.util.TestPOJO;
 import com.datatorrent.contrib.util.TupleGenerator;
 
-public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< KinesisPojoOutputOperator, PojoTupleGenerateOperator >
+public class KinesisPOJOOutputOperatorTest extends KinesisOutputOperatorTest< KinesisPOJOOutputOperator, POJOTupleGenerateOperator >
 { 
-  public static class EmployeeTupleGenerateOperator extends PojoTupleGenerateOperator< TestPOJO >
+  public static class EmployeeTupleGenerateOperator extends POJOTupleGenerateOperator< TestPOJO >
   {
     public EmployeeTupleGenerateOperator()
     {
@@ -32,7 +49,7 @@ public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< Ki
   @Test
   public void testKinesisOutputOperatorInternal() throws Exception
   {
-    KinesisPojoOutputOperator operator = new KinesisPojoOutputOperator();
+    KinesisPOJOOutputOperator operator = new KinesisPOJOOutputOperator();
     configureTestingOperator( operator );
     operator.setBatchProcessing(false);
     
@@ -60,21 +77,21 @@ public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< Ki
   }
   
   @Override
-  protected PojoTupleGenerateOperator addGenerateOperator(DAG dag)
+  protected POJOTupleGenerateOperator addGenerateOperator(DAG dag)
   {
     return dag.addOperator("TestPojoGenerator", EmployeeTupleGenerateOperator.class);
   }
 
   @Override
-  protected DefaultOutputPort getOutputPortOfGenerator(PojoTupleGenerateOperator generator)
+  protected DefaultOutputPort getOutputPortOfGenerator(POJOTupleGenerateOperator generator)
   {
     return generator.outputPort;
   }
 
   @Override
-  protected KinesisPojoOutputOperator addTestingOperator(DAG dag)
+  protected KinesisPOJOOutputOperator addTestingOperator(DAG dag)
   {
-    KinesisPojoOutputOperator operator = dag.addOperator("Test-KinesisPojoOutputOperator", KinesisPojoOutputOperator.class);
+    KinesisPOJOOutputOperator operator = dag.addOperator("Test-KinesisPojoOutputOperator", KinesisPOJOOutputOperator.class);
     //table info
     {
       TableInfo tableInfo = new TableInfo();
