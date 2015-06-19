@@ -1,10 +1,6 @@
 package com.datatorrent.contrib.kinesis;
 
 import java.nio.ByteBuffer;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,22 +10,20 @@ import org.slf4j.LoggerFactory;
 import com.amazonaws.services.kinesis.model.Record;
 import com.datatorrent.api.DAG;
 import com.datatorrent.api.DefaultOutputPort;
-import com.datatorrent.contrib.common.FieldInfo;
-import com.datatorrent.contrib.common.FieldValueGenerator;
-import com.datatorrent.contrib.common.TableInfo;
-import com.datatorrent.contrib.model.Employee;
-import com.datatorrent.contrib.model.PojoTupleGenerateOperator;
-import com.datatorrent.contrib.model.TupleGenerator;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
+import com.datatorrent.contrib.util.FieldInfo;
+import com.datatorrent.contrib.util.FieldValueGenerator;
+import com.datatorrent.contrib.util.PojoTupleGenerateOperator;
+import com.datatorrent.contrib.util.TableInfo;
+import com.datatorrent.contrib.util.TestPOJO;
+import com.datatorrent.contrib.util.TupleGenerator;
 
 public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< KinesisPojoOutputOperator, PojoTupleGenerateOperator >
 { 
-  public static class EmployeeTupleGenerateOperator extends PojoTupleGenerateOperator< Employee >
+  public static class EmployeeTupleGenerateOperator extends PojoTupleGenerateOperator< TestPOJO >
   {
     public EmployeeTupleGenerateOperator()
     {
-      super( Employee.class );
+      super( TestPOJO.class );
       setTupleNum(maxTuple);
     }
   }
@@ -43,13 +37,13 @@ public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< Ki
     operator.setBatchProcessing(false);
     
     TableInfo tableInfo = new TableInfo();
-    tableInfo.setFieldsInfo( Employee.getFieldsInfo() );
-    tableInfo.setRowOrIdExpression( Employee.getRowExpression() );
+    tableInfo.setFieldsInfo( TestPOJO.getFieldsInfo() );
+    tableInfo.setRowOrIdExpression( TestPOJO.getRowExpression() );
     operator.setTableInfo( tableInfo );
 
     operator.setup(null);
     
-    TupleGenerator generator = new TupleGenerator( Employee.class );
+    TupleGenerator generator = new TupleGenerator( TestPOJO.class );
     
     //read tuples
     KinesisTestConsumer listener = createConsumerListener(streamName);
@@ -84,8 +78,8 @@ public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< Ki
     //table info
     {
       TableInfo tableInfo = new TableInfo();
-      tableInfo.setFieldsInfo( Employee.getFieldsInfo() );
-      tableInfo.setRowOrIdExpression( Employee.getRowExpression() );
+      tableInfo.setFieldsInfo( TestPOJO.getFieldsInfo() );
+      tableInfo.setRowOrIdExpression( TestPOJO.getRowExpression() );
       operator.setTableInfo( tableInfo );
     }
     operator.setBatchProcessing(true);
@@ -107,7 +101,7 @@ public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< Ki
   public static class KinesisEmployeeConsumer extends KinesisTestConsumer
   {
     private static final Logger logger = LoggerFactory.getLogger( KinesisEmployeeConsumer.class );
-    protected FieldValueGenerator<FieldInfo> fieldValueGenerator = FieldValueGenerator.getFieldValueGenerator(Employee.class, Employee.getFieldsInfo() );
+    protected FieldValueGenerator<FieldInfo> fieldValueGenerator = FieldValueGenerator.getFieldValueGenerator(TestPOJO.class, TestPOJO.getFieldsInfo() );
     
     public KinesisEmployeeConsumer(String streamNamem )
     {
@@ -124,9 +118,9 @@ public class KinesisPojoOutputOperatorTest extends KinesisOutputOperatorTest< Ki
       data.get( dataBytes, 0, dataBytes.length );
       
       long key = Long.valueOf( partitionKey );
-      Employee expected = new Employee( key );
+      TestPOJO expected = new TestPOJO( key );
       
-      Employee read = (Employee)fieldValueGenerator.deserializeObject( dataBytes );
+      TestPOJO read = (TestPOJO)fieldValueGenerator.deserializeObject( dataBytes );
       
       if( !read.outputFieldsEquals(expected) )
       {

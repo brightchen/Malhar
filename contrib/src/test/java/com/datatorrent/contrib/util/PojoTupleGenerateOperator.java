@@ -1,4 +1,4 @@
-package com.datatorrent.contrib.model;
+package com.datatorrent.contrib.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -6,6 +6,7 @@ import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.InputOperator;
 import com.datatorrent.api.Operator.ActivationListener;
+import com.datatorrent.contrib.util.TupleGenerator;
 
 /**
  * Mark this class as abstract just because it doesn't provide default constructor and can't be used directly as an Operator

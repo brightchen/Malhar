@@ -1,12 +1,15 @@
-package com.datatorrent.contrib.model;
+package com.datatorrent.contrib.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import com.datatorrent.contrib.common.FieldInfo;
-import com.datatorrent.contrib.common.FieldInfo.SupportType;
+import org.apache.hadoop.hbase.util.Bytes;
 
-public class Employee
+import com.datatorrent.contrib.util.FieldInfo;
+import com.datatorrent.contrib.util.FieldInfo.SupportType;
+
+public class TestPOJO
 {
   public static List<FieldInfo> getFieldsInfo()
   {
@@ -23,32 +26,73 @@ public class Employee
     return "row";
   }
   
+  public static TestPOJO from( Map<String,byte[]> map )
+  {
+    TestPOJO testPOJO = new TestPOJO();
+    for( Map.Entry<String, byte[]> entry : map.entrySet() )
+    {
+      testPOJO.setValue(entry.getKey(), entry.getValue() );
+    }
+    return testPOJO;
+  }
   
   private long rowId = 0;
   private String name;
   private int age;
   private String address;
 
-  public Employee(){}
+  public TestPOJO(){}
   
-  public Employee(long rowId)
+  public TestPOJO(long rowId)
   {
     this(rowId, "name" + rowId, (int) rowId, "address" + rowId);
   }
 
-  public Employee(long rowId, String name, int age, String address)
+  public TestPOJO(long rowId, String name, int age, String address)
   {
     this.rowId = rowId;
     setName(name);
     setAge(age);
     setAddress(address);
   }
+  
+  public void setValue( String fieldName, byte[] value )
+  {
+    if( "row".equalsIgnoreCase(fieldName) )
+    {
+      setRow( Bytes.toString(value) );
+      return;
+    }
+    if( "name".equalsIgnoreCase(fieldName))
+    {
+      setName( Bytes.toString(value));
+      return;
+    }
+    if( "address".equalsIgnoreCase(fieldName))
+    {
+      setAddress( Bytes.toString(value));
+      return;
+    }
+    if( "age".equalsIgnoreCase(fieldName))
+    {
+      setAge( Bytes.toInt(value) );
+      return;
+    }
+  }
 
   public String getRow()
   {
     return String.valueOf(rowId);
   }
-
+  public void setRow( String row )
+  {
+    setRowId( Long.valueOf(row) );
+  }
+  public void setRowId( long rowId )
+  {
+    this.rowId = rowId;
+  }
+  
   public String getName()
   {
     return name;
@@ -79,7 +123,7 @@ public class Employee
     this.address = address;
   }
 
-  public boolean outputFieldsEquals( Employee other )
+  public boolean outputFieldsEquals( TestPOJO other )
   {
     if( other == null )
       return false;
@@ -92,7 +136,7 @@ public class Employee
     return true;
   }
   
-  public boolean completeEquals( Employee other )
+  public boolean completeEquals( TestPOJO other )
   {
     if( other == null )
       return false;
@@ -110,5 +154,11 @@ public class Employee
     if( v1 == null || v2 == null )
       return false;
     return v1.equals( v2 );
+  }
+  
+  @Override
+  public String toString()
+  {
+    return String.format( "id={%d}; name={%s}; age={%d}; address={%s}", rowId, name, age, address);
   }
 }
