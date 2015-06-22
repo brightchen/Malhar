@@ -36,9 +36,9 @@ public class MemcacheOperatorTest
   public void setup()
   {
     MemcacheStore operatorStore = new MemcacheStore();
-    operatorStore.setServerAddresses( AddrUtil.getAddresses("v1.bright:11211") );
+    operatorStore.setServerAddresses( AddrUtil.getAddresses("localhost:11211") );
     MemcacheStore testStore = new MemcacheStore();
-    testStore.setServerAddresses( AddrUtil.getAddresses("v1.bright:11211") );
+    testStore.setServerAddresses( AddrUtil.getAddresses("localhost:11211") );
     testFramework = new KeyValueStoreOperatorTest<MemcacheStore>( operatorStore, testStore );
   }
 
