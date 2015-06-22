@@ -3,6 +3,7 @@ package com.datatorrent.contrib.memcache;
 import net.spy.memcached.AddrUtil;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.datatorrent.contrib.util.TableInfo;
@@ -14,19 +15,42 @@ public class MemcachePOJOOperatorTest
 {
   public static final int TUPLE_SIZE = 1000;
   
+  private MemcacheStore store;
+  
+  @Before
+  public void setup()
+  {
+    store = new MemcacheStore();
+    store.setServerAddresses(AddrUtil.getAddresses("v1.bright:11211") );
+  }
+  
+  public void cleanup()
+  {
+    if( store != null )
+    {
+      try
+      {
+        store.disconnect();
+      }
+      catch( Exception e )
+      {
+        
+      }
+    }
+      
+  }
+  
   @SuppressWarnings("unchecked")
   @Test
   public void testMemcacheOutputOperatorInternal() throws Exception
   {
     MemcachePOJOOutputOperator operator = new MemcachePOJOOutputOperator();
-    MemcacheStore store = new MemcacheStore();
-    store.setServerAddresses(AddrUtil.getAddresses("v1.bright:11211") );
     operator.setStore(store);
 
     TableInfo tableInfo = new TableInfo();
     tableInfo.setRowOrIdExpression( TestPOJO.getRowExpression() );
-//    tableInfo.setFieldsInfo( TestPOJO.getFieldsInfo() );
-//    tableInfo.setRowOrIdExpression( TestPOJO.getRowExpression() );
+    tableInfo.setFieldsInfo( TestPOJO.getFieldsInfo() );
+    tableInfo.setRowOrIdExpression( TestPOJO.getRowExpression() );
     operator.setTableInfo( tableInfo );
 
     operator.setup(null);
