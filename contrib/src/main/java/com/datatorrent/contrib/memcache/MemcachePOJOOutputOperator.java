@@ -59,25 +59,22 @@ public class MemcachePOJOOutputOperator extends AbstractMemcacheOutputOperator< 
     getStore().put( rowGetter.get(tuple), value);
   }
 
+  /**
+   * 
+   * the information to convert pojo
+   */
   public TableInfo<FieldInfo> getTableInfo()
   {
     return tableInfo;
   }
 
+  /**
+   * 
+   * the information to convert pojo
+   */
   public void setTableInfo(TableInfo<FieldInfo> tableInfo)
   {
     this.tableInfo = tableInfo;
   }
-
-  public Getter<Object, String> getRowGetter()
-  {
-    return rowGetter;
-  }
-
-  public void setRowGetter(Getter<Object, String> rowGetter)
-  {
-    this.rowGetter = rowGetter;
-  }
-
   
 }
