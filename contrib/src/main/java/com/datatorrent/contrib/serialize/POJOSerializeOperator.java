@@ -15,7 +15,14 @@
  */
 package com.datatorrent.contrib.serialize;
 
-import com.datatorrent.api.BaseOperator;
+import java.util.List;
+
+import com.datatorrent.contrib.util.DelegateSerializer.SerializerImplementer;
+import com.datatorrent.contrib.util.ObjectPropertiesConverter.PropertyInfo;
+import com.datatorrent.contrib.util.Serializer;
+import com.datatorrent.contrib.util.SerializerFactory;
+import com.datatorrent.lib.util.PojoUtils;
+import com.datatorrent.lib.util.PojoUtils.Getter;
 
 /**
  * 
@@ -25,7 +32,68 @@ import com.datatorrent.api.BaseOperator;
  * @category Serialize
  * @tags serialize, Pojo
  */
-public class POJOSerializeOperator  extends BaseOperator
+public class POJOSerializeOperator  extends AbstractSerializeOperator< Object >
 {
+  private static final long serialVersionUID = -2339881909844710454L;
+  private transient Serializer serializer;
+  private transient Getter<Object, String> keyGetter;
+  
+  private String keyExpression;
+  private List<PropertyInfo> propertyInfos;
+  private SerializerImplementer serializerImplementer = SerializerImplementer.KRYO;
+  
+  @Override
+  protected byte[] serialize(Object tuple)
+  {
+    return getSerializer( tuple ).serialize(tuple);
+  }
 
+  @Override
+  protected String getKey(Object tuple)
+  {
+    if( keyGetter == null )
+      keyGetter = PojoUtils.createGetter( tuple.getClass(), keyExpression, String.class );
+    return keyGetter.get( tuple );
+  }
+
+  protected Serializer getSerializer( Object tuple )
+  {
+    if( serializer != null )
+      return serializer;
+    serializer = SerializerFactory.getSerializer( tuple.getClass(), serializerImplementer, propertyInfos.toArray( new PropertyInfo[0] ) );
+    return serializer;
+  }
+
+  public String getKeyExpression()
+  {
+    return keyExpression;
+  }
+
+  public void setKeyExpression(String keyExpression)
+  {
+    this.keyExpression = keyExpression;
+  }
+
+  
+  public List<PropertyInfo> getPropertyInfos()
+  {
+    return propertyInfos;
+  }
+
+  public void setPropertyInfos(List<PropertyInfo> propertyInfos)
+  {
+    this.propertyInfos = propertyInfos;
+  }
+
+  public SerializerImplementer getSerializerImplementer()
+  {
+    return serializerImplementer;
+  }
+
+  public void setSerializerImplementer(SerializerImplementer serializerImplementer)
+  {
+    this.serializerImplementer = serializerImplementer;
+  }
+  
+  
 }

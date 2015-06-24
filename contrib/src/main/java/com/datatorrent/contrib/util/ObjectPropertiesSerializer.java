@@ -12,11 +12,11 @@ public class ObjectPropertiesSerializer<T> extends DelegateSerializer
   
   public ObjectPropertiesSerializer( Class<T> type )
   {
-    useSerializer( SERIALIZER.KRYO );
+    useSerializer( SerializerImplementer.KRYO );
     useConverter( new ObjectSequentialPropertiesConverter( type ) );
   }
   
-  public ObjectPropertiesSerializer useSerializer( SERIALIZER serializer )
+  public ObjectPropertiesSerializer useSerializer( SerializerImplementer serializer )
   {
     setSerializer(serializer);
     return this;

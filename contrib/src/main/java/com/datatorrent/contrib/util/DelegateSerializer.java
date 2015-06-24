@@ -3,7 +3,7 @@ package com.datatorrent.contrib.util;
 
 public class DelegateSerializer implements Serializer
 {
-  public static enum SERIALIZER
+  public static enum SerializerImplementer
   {
     KRYO,
     JAVA
@@ -13,10 +13,10 @@ public class DelegateSerializer implements Serializer
   
   public DelegateSerializer()
   {
-    this( SERIALIZER.KRYO );
+    this( SerializerImplementer.KRYO );
   }
   
-  public DelegateSerializer( SERIALIZER serializer )
+  public DelegateSerializer( SerializerImplementer serializer )
   {
     setSerializer( serializer );
   }
@@ -26,7 +26,7 @@ public class DelegateSerializer implements Serializer
     this.impl = impl;
   }
   
-  protected void setSerializer( SERIALIZER serializer )
+  protected void setSerializer( SerializerImplementer serializer )
   {
     switch( serializer )
     {

@@ -72,20 +72,38 @@ public class ObjectSequentialPropertiesConverter<V> implements ObjectPropertiesC
     return value;
   }
   
-  public void setProperties( List< Pair<String, Class> > properties )
+
+  public void setProperties( PropertyInfo ... properties )
+  {
+    getters.clear();
+    setters.clear();
+    addProperties( properties );
+  }
+
+  public void addProperties( PropertyInfo ... properties )
+  {
+    for( PropertyInfo element : properties )
+    {
+      addProperty( element.expression, element.type );
+    }
+  }
+  
+  
+  public void setProperties( Pair<String, Class> ... properties )
   {
     getters.clear();
     setters.clear();
     addProperties( properties );
   }
   
-  public void addProperties( List< Pair<String, Class> > properties )
+  public void addProperties( Pair<String, Class> ... properties )
   {
     for( Pair<String,Class> element : properties )
     {
       addProperty( element.getFirst(), element.getSecond() );
     }
   }
+  
   
   public void addProperty( String expression, Class type )
   {

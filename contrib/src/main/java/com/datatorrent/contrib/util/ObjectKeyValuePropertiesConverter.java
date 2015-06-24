@@ -76,6 +76,21 @@ public class ObjectKeyValuePropertiesConverter<V> implements ObjectPropertiesCon
     }
   }
   
+  public void setProperties( PropertyInfo ... propertyInfos )
+  {
+    getterMap.clear();
+    setterMap.clear();
+    addProperties( propertyInfos );
+  }
+  
+  public void addProperties( PropertyInfo ... propertyInfos )
+  {
+    for( PropertyInfo propertyInfo : propertyInfos )
+    {
+      addProperty( propertyInfo.name, propertyInfo.expression, propertyInfo.type );
+    }
+  }
+  
   public void addProperty( String name, String expression, Class type )
   {
     {
@@ -89,36 +104,4 @@ public class ObjectKeyValuePropertiesConverter<V> implements ObjectPropertiesCon
     }
   }
   
-  
-  public static class PropertyInfo
-  {
-    private String name;
-    private String expression;
-    private Class type;
-    
-    public PropertyInfo( String name, String expression, Class type )
-    {
-      this.name = name;
-      this.expression = expression;
-      this.type = type;
-    }
-    
-
-    /**
-     * the columnName should not duplicate( case-insensitive )
-     */
-    @Override
-    public int hashCode()
-    {
-      return name.toLowerCase().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-      if (obj == null || !(obj instanceof PropertyInfo))
-        return false;
-      return name.equalsIgnoreCase(((PropertyInfo) obj).name);
-    }
-  }
 }
