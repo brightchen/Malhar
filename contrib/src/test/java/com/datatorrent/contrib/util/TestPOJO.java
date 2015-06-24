@@ -1,4 +1,4 @@
-package com.datatorrent.contrib.hbase;
+package com.datatorrent.contrib.util;
 
 import java.util.ArrayList;
 import java.util.List;
