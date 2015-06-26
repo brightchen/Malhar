@@ -45,23 +45,22 @@ public class FieldValueGenerator< T extends FieldInfo >
     }
     return fieldValueGenerator;
   }
-	
-	/**
-	 * use FieldValueHandler handle the value
-	 * @param obj
-	 * @param fieldValueHandler
-	 * @return
-	 */
-	public void handleFieldsValue( Object obj,  FieldValueHandler fieldValueHandler )
-	{
-		for( Map.Entry< T, Getter<Object,Object>> entry : fieldGetterMap.entrySet() )
-		{
-			Getter<Object,Object> getter = entry.getValue();
-			if( getter != null )
-			{
-				Object value = getter.get(obj);
-				fieldValueHandler.handleFieldValue(entry.getKey(), value);
-			}
-		}
-	}
+
+  /**
+   * use FieldValueHandler handle the value
+   * 
+   * @param obj
+   * @param fieldValueHandler
+   * @return
+   */
+  public void handleFieldsValue(Object obj, FieldValueHandler fieldValueHandler)
+  {
+    for (Map.Entry<T, Getter<Object, Object>> entry : fieldGetterMap.entrySet()) {
+      Getter<Object, Object> getter = entry.getValue();
+      if (getter != null) {
+        Object value = getter.get(obj);
+        fieldValueHandler.handleFieldValue(entry.getKey(), value);
+      }
+    }
+  }
 }

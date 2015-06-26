@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.datatorrent.contrib.hbase;
+package com.datatorrent.contrib.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +24,13 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import com.datatorrent.contrib.util.FieldInfo;
 import com.datatorrent.contrib.util.FieldInfo.SupportType;
+import com.datatorrent.contrib.util.ObjectPropertiesConverter.PropertyInfo;
 
-public class TestPOJO
+
+public class TestPOJO implements Serializable
 {
+  private static final long serialVersionUID = 2153417121590225192L;
+
   public static List<FieldInfo> getFieldsInfo()
   {
     List<FieldInfo> fieldsInfo = new ArrayList<FieldInfo>();
@@ -34,6 +39,17 @@ public class TestPOJO
     fieldsInfo.add( new FieldInfo( "address", "address", SupportType.STRING ) );
     
     return fieldsInfo;
+  }
+  
+  public static PropertyInfo[] getPropertyInfos()
+  {
+    List<PropertyInfo> propertyInfos = new ArrayList<PropertyInfo>();
+    propertyInfos.add( new PropertyInfo( "rowId", "rowId", Long.class ) );
+    propertyInfos.add( new PropertyInfo( "name", "name", String.class ) );
+    propertyInfos.add( new PropertyInfo( "age", "age", Integer.class ) );
+    propertyInfos.add( new PropertyInfo( "address", "address", String.class ) );
+    
+    return propertyInfos.toArray( new PropertyInfo[0]);
   }
   
   public static String getRowExpression()
@@ -51,7 +67,7 @@ public class TestPOJO
     return testPOJO;
   }
   
-  private long rowId = 0;
+  private Long rowId = null;
   private String name;
   private int age;
   private String address;
@@ -103,11 +119,14 @@ public class TestPOJO
   {
     setRowId( Long.valueOf(row) );
   }
-  public void setRowId( long rowId )
+  public void setRowId( Long rowId )
   {
     this.rowId = rowId;
   }
-  
+  public Long getRowId()
+  {
+    return rowId;
+  }
   public String getName()
   {
     return name;
@@ -136,6 +155,17 @@ public class TestPOJO
   public void setAddress(String address)
   {
     this.address = address;
+  }
+  
+  @Override
+  public boolean equals( Object obj )
+  {
+    if( obj == null )
+      return false;
+    if( !( obj instanceof TestPOJO ) )
+      return false;
+    
+    return completeEquals( (TestPOJO)obj );
   }
 
   public boolean outputFieldsEquals( TestPOJO other )
