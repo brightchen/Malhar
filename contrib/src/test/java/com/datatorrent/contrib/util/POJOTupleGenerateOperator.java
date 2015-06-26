@@ -34,6 +34,7 @@ public class POJOTupleGenerateOperator<T> implements InputOperator, ActivationLi
   public final transient DefaultOutputPort<T> outputPort = new DefaultOutputPort<T>();
   
   private int tupleNum = DEFAULT_TUPLE_NUM;
+  private int batchNum = 5;
   private TupleGenerator<T> tupleGenerator = null;
   private Class<T> tupleClass;
   private AtomicInteger emitedTuples = new AtomicInteger(0);
@@ -86,19 +87,36 @@ public class POJOTupleGenerateOperator<T> implements InputOperator, ActivationLi
   public void emitTuples()
   {
     final int theTupleNum = getTupleNum();
-    
-    while(true)
+    if( emitedTuples.get() >= theTupleNum )
     {
-      int count = emitedTuples.addAndGet(1);
-      if( count > theTupleNum )
+      try
       {
-        tupleEmitDone();
+        Thread.sleep(10);
+      }
+      catch( Exception e ){}
+      return;
+    }
+      
+    
+    for( int i=0; i<batchNum; ++i )
+    {
+      int count = emitedTuples.get();
+      if( count >= theTupleNum )
         return;
+      
+      if( emitedTuples.compareAndSet(count, count+1) )
+      {
+        T tuple = getNextTuple();        
+        outputPort.emit ( tuple );
+        tupleEmitted( tuple );
+        
+        if( count+1 == theTupleNum )
+        {
+          tupleEmitDone();
+          return;
+        }
       }
       
-      T tuple = getNextTuple();
-      outputPort.emit ( tuple );
-      tupleEmitted( tuple );
     }
   }
   

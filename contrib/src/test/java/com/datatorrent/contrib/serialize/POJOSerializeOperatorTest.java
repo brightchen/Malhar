@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.datatorrent.api.DAG;
 import com.datatorrent.api.DAG.Locality;
@@ -16,21 +18,23 @@ import com.datatorrent.contrib.util.TupleGenerateCacheOperator;
 
 public class POJOSerializeOperatorTest
 {
+  public static enum OPERATOR
+  {
+    GENERATOR,
+    SERIALIZER,
+    DESERIALIZER,
+    OUTPUT
+  };
+  
+  private static final Logger logger = LoggerFactory.getLogger( POJOSerializeOperatorTest.class );
+  
+  private static final int TUPLE_NUM = 10;
   
   public static class MyGenerator extends TupleGenerateCacheOperator<TestPOJO>
   {
-    //private CountDownLatch doneLatch = new CountDownLatch(1);
-    private boolean tupleEmitDone = false;
     public MyGenerator()
     {
       this.setTupleType( TestPOJO.class );
-    }
-    
-    @Override
-    protected void tupleEmitDone()
-    {
-      //doneLatch.countDown();
-      tupleEmitDone = true;
     }
   }
   
@@ -51,7 +55,8 @@ public class POJOSerializeOperatorTest
     DAG dag = lma.getDAG();
 
     // Create ActiveMQStringSinglePortOutputOperator
-    MyGenerator generator = dag.addOperator("Generator", MyGenerator.class);
+    MyGenerator generator = dag.addOperator( OPERATOR.GENERATOR.name(), MyGenerator.class);
+    generator.setTupleNum( TUPLE_NUM );
     
     POJOSerializeOperator serializeOperator = dag.addOperator("SerializeOperator", POJOSerializeOperator.class);
     serializeOperator.setKeyExpression( TestPOJO.getRowExpression() );
@@ -61,13 +66,14 @@ public class POJOSerializeOperatorTest
     deserializeOperator.setTupleType(TestPOJO.class);
     deserializeOperator.setPropertyInfos( TestPOJO.getPropertyInfos() );
     
-    TupleCacheOutputOperator output = dag.addOperator("OutputOperator", TupleCacheOutputOperator.class);
+    TupleCacheOutputOperator output = dag.addOperator(OPERATOR.OUTPUT.name(), TupleCacheOutputOperator.class);
     
     // Connect ports
     dag.addStream("queue1", generator.outputPort, serializeOperator.inputPort ).setLocality(Locality.CONTAINER_LOCAL);
     dag.addStream("queue2", serializeOperator.outputPort, deserializeOperator.pairInputPort ).setLocality(Locality.CONTAINER_LOCAL);
     dag.addStream("queue3", deserializeOperator.outputPort, output.inputPort ).setLocality(Locality.CONTAINER_LOCAL);
-
+    
+    
     Configuration conf = new Configuration(false);
     lma.prepareDAG(app, conf);
 
@@ -81,15 +87,19 @@ public class POJOSerializeOperatorTest
       try
       {
         Thread.sleep(1000);
-        if( generator.tupleEmitDone )
-          break;
       }
       catch( Exception e ){}
+      
+      logger.info( "Received tuple number {}, instance is {}.", output.getReceivedTuples() == null ? 0 : output.getReceivedTuples().size(), System.identityHashCode( output ) );
+      if( output.getReceivedTuples() != null && output.getReceivedTuples().size() == TUPLE_NUM )
+        break;
     }
     
-    validate( generator.getTuples(), output.getReceivedTuples() );
-    
     lc.shutdown();
+
+    
+    validate( generator.getTuples(), output.getReceivedTuples() );
+
   }
   
   protected void validate( List<TestPOJO> generatedTuples, List<TestPOJO> receivedTuples )

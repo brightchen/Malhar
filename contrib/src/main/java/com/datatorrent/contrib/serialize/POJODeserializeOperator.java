@@ -38,8 +38,8 @@ public class POJODeserializeOperator  extends AbstractDeserializeOperator< Objec
   private static final Logger logger = LoggerFactory.getLogger( POJODeserializeOperator.class );
 
   private transient Serializer serializer;
-  private transient Class tupleType;
   
+  private Class tupleType;
   private PropertyInfo[] propertyInfos;
   // the type of tuple
   private String tupleTypeName;

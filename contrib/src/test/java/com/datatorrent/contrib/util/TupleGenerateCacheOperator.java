@@ -1,19 +1,35 @@
 package com.datatorrent.contrib.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TupleGenerateCacheOperator<T> extends POJOTupleGenerateOperator<T>
 {
-  private List<T> tuples = new ArrayList<T>();
+  //one instance of TupleCacheOutputOperator map to one 
+  private static Map< String, List<?> > emittedTuplesMap = new HashMap< String, List<?>>();
+
+  private String uuid;
+  
+  public TupleGenerateCacheOperator()
+  {
+    uuid = java.util.UUID.randomUUID().toString();
+  }
   
   protected void tupleEmitted( T tuple )
   {
-    tuples.add(tuple);
+    List<T> emittedTuples = (List<T>)emittedTuplesMap.get(uuid);
+    if( emittedTuples == null )
+    {
+      emittedTuples = new ArrayList<T>();
+      emittedTuplesMap.put(uuid, emittedTuples);
+    }
+    emittedTuples.add(tuple);
   }
   
   public List<T> getTuples()
   {
-    return tuples;
+    return (List<T>)emittedTuplesMap.get(uuid);
   }
 }
