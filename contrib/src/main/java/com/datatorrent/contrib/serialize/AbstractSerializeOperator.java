@@ -43,7 +43,7 @@ public abstract class AbstractSerializeOperator<T> extends BaseOperator
    * The input port on which tuples are received
    */
   @InputPortFieldAnnotation(optional = true)
-  public final transient DefaultInputPort<T> input = new DefaultInputPort<T>() {
+  public final transient DefaultInputPort<T> inputPort = new DefaultInputPort<T>() {
     @Override
     public void process(T t)
     {

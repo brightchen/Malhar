@@ -34,6 +34,8 @@ public interface ObjectPropertiesConverter< V, P>
     protected String expression;
     protected Class type;
     
+    public PropertyInfo(){}
+    
     public PropertyInfo( String name, String expression, Class type )
     {
       this.name = name;
@@ -41,6 +43,36 @@ public interface ObjectPropertiesConverter< V, P>
       this.type = type;
     }
     
+
+    public String getName()
+    {
+      return name;
+    }
+
+    public void setName(String name)
+    {
+      this.name = name;
+    }
+
+    public String getExpression()
+    {
+      return expression;
+    }
+
+    public void setExpression(String expression)
+    {
+      this.expression = expression;
+    }
+
+    public Class getType()
+    {
+      return type;
+    }
+
+    public void setType(Class type)
+    {
+      this.type = type;
+    }
 
     /**
      * the columnName should not duplicate( case-insensitive )

@@ -7,7 +7,7 @@ public class SerializerFactory
 {
   public static Serializer getSerializer( Class type, SerializerImplementer serializerImplementer, PropertyInfo[] propertyInfos )
   {
-    if( propertyInfos == null || propertyInfos.length == 0 )
+    if( propertyInfos == null || propertyInfos.length == 0 || type == null )
       return new DelegateSerializer( serializerImplementer );
     else
     {

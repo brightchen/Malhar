@@ -15,67 +15,51 @@
  */
 package com.datatorrent.contrib.serialize;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.datatorrent.contrib.util.DelegateSerializer.SerializerImplementer;
 import com.datatorrent.contrib.util.ObjectPropertiesConverter.PropertyInfo;
 import com.datatorrent.contrib.util.Serializer;
 import com.datatorrent.contrib.util.SerializerFactory;
-import com.datatorrent.lib.util.PojoUtils;
-import com.datatorrent.lib.util.PojoUtils.Getter;
 
 /**
  * 
- * The operator serialize the POJO
+ * The operator deserialize the POJO
  * 
  * @displayName POJO Serialize
  * @category Serialize
- * @tags serialize, Pojo
+ * @tags deserialize, Pojo
  */
-public class POJOSerializeOperator  extends AbstractSerializeOperator< Object >
+@SuppressWarnings("rawtypes")
+public class POJODeserializeOperator  extends AbstractDeserializeOperator< Object >
 {
-  private static final long serialVersionUID = -2339881909844710454L;
+  private static final long serialVersionUID = 4777531703441029330L;
+  private static final Logger logger = LoggerFactory.getLogger( POJODeserializeOperator.class );
+
   private transient Serializer serializer;
-  private transient Getter<Object, String> keyGetter;
+  private transient Class tupleType;
   
   private PropertyInfo[] propertyInfos;
-  private String keyExpression;
+  // the type of tuple
+  private String tupleTypeName;
   
   private SerializerImplementer serializerImplementer = SerializerImplementer.KRYO;
   
   @Override
-  protected byte[] serialize(Object tuple)
+  protected Object deserialize(byte[] value)
   {
-    return getSerializer( tuple ).serialize(tuple);
+    return getSerializer().deserialize(value);
   }
+  
 
-  @Override
-  protected String getKey(Object tuple)
-  {
-    if( keyGetter == null )
-      keyGetter = PojoUtils.createGetter( tuple.getClass(), keyExpression, String.class );
-    return keyGetter.get( tuple );
-  }
-
-  protected Serializer getSerializer( Object tuple )
+  protected Serializer getSerializer()
   {
     if( serializer != null )
       return serializer;
-    serializer = SerializerFactory.getSerializer( tuple.getClass(), serializerImplementer, propertyInfos );
+    serializer = SerializerFactory.getSerializer( tupleType, serializerImplementer, propertyInfos );
     return serializer;
   }
-
-  public String getKeyExpression()
-  {
-    return keyExpression;
-  }
-
-  public void setKeyExpression(String keyExpression)
-  {
-    this.keyExpression = keyExpression;
-  }
-
   
   public PropertyInfo[] getPropertyInfos()
   {
@@ -96,4 +80,23 @@ public class POJOSerializeOperator  extends AbstractSerializeOperator< Object >
   {
     this.serializerImplementer = serializerImplementer;
   }
+
+
+  public String getTupleTypeName()
+  {
+    return tupleType.getName();
+  }
+
+  public void setTupleTypeName(String tupleTypeName) throws ClassNotFoundException
+  {
+    this.tupleTypeName = tupleTypeName;
+    this.tupleType = Class.forName(tupleTypeName);
+  }
+  
+  public void setTupleType( Class tupleType )
+  {
+    this.tupleType = tupleType;
+    this.tupleTypeName = tupleType.getName();
+  }
+
 }
