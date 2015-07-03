@@ -12,7 +12,7 @@ import com.datatorrent.api.DAG;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.common.util.Pair;
 import com.datatorrent.contrib.util.FieldInfo;
-import com.datatorrent.contrib.util.FieldValueGenerator;
+import com.datatorrent.contrib.util.FieldValueSerializableGenerator;
 import com.datatorrent.contrib.util.POJOTupleGenerateOperator;
 import com.datatorrent.contrib.util.TestPOJO;
 import com.datatorrent.contrib.util.TupleGenerator;
@@ -31,7 +31,7 @@ public class KinesisByteArrayOutputOperatorTest extends KinesisOutputOperatorTes
   }
   
   
-  private FieldValueGenerator fieldValueGenerator;
+  private FieldValueSerializableGenerator fieldValueGenerator;
 
   @Test
   public void testKinesisOutputOperatorInternal() throws Exception
@@ -55,14 +55,14 @@ public class KinesisByteArrayOutputOperatorTest extends KinesisOutputOperatorTes
       
       operator.processTuple( getNextTuple( generator) );
     }
-    iterator = listener.processNextIterator(iterator);
+    listener.processNextIterator(iterator);
   }
   
   protected Pair<String,byte[]> getNextTuple( TupleGenerator<TestPOJO> generator )
   {
     TestPOJO obj = generator.getNextTuple();
     if( fieldValueGenerator == null )
-      fieldValueGenerator = FieldValueGenerator.getFieldValueGenerator( TestPOJO.class, null);
+      fieldValueGenerator = FieldValueSerializableGenerator.getFieldValueGenerator( TestPOJO.class, null);
     return new Pair<String,byte[]>( obj.getRow(), fieldValueGenerator.serializeObject(obj) );
   }
   
@@ -101,7 +101,7 @@ public class KinesisByteArrayOutputOperatorTest extends KinesisOutputOperatorTes
   public static class KinesisEmployeeConsumer extends KinesisTestConsumer
   {
     private static final Logger logger = LoggerFactory.getLogger( KinesisEmployeeConsumer.class );
-    protected FieldValueGenerator<FieldInfo> fieldValueGenerator = FieldValueGenerator.getFieldValueGenerator(TestPOJO.class, null );
+    protected FieldValueSerializableGenerator<FieldInfo> fieldValueGenerator = FieldValueSerializableGenerator.getFieldValueGenerator(TestPOJO.class, null );
     
     public KinesisEmployeeConsumer(String streamNamem )
     {
