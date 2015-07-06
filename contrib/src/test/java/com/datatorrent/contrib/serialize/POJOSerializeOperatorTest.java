@@ -15,6 +15,8 @@ import com.datatorrent.api.StreamingApplication;
 import com.datatorrent.contrib.util.TestPOJO;
 import com.datatorrent.contrib.util.TupleCacheOutputOperator;
 import com.datatorrent.contrib.util.TupleGenerateCacheOperator;
+import com.datatorrent.lib.serialize.POJODeserializeOperator;
+import com.datatorrent.lib.serialize.POJOSerializeOperator;
 
 public class POJOSerializeOperatorTest
 {

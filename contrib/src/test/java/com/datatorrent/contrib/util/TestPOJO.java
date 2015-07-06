@@ -24,7 +24,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 import com.datatorrent.contrib.util.FieldInfo;
 import com.datatorrent.contrib.util.FieldInfo.SupportType;
-import com.datatorrent.contrib.util.ObjectPropertiesConverter.PropertyInfo;
+import com.datatorrent.lib.serialize.ObjectPropertiesConverter.PropertyInfo;
 
 
 public class TestPOJO implements Serializable

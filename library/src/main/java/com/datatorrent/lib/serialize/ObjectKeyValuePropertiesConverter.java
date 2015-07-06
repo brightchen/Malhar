@@ -1,4 +1,4 @@
-package com.datatorrent.contrib.util;
+package com.datatorrent.lib.serialize;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,14 +21,14 @@ public class ObjectKeyValuePropertiesConverter<V> implements ObjectPropertiesCon
   }
   
   @Override
-  public Map<String, Object> fromObject(V value)
+  public Map<String, Object> fromOriginObject(V value)
   {
     Map<String, Object> propertyValue = new HashMap<String, Object>();
-    return fromObject( value, propertyValue );
+    return fromOriginObject( value, propertyValue );
   }
 
   @Override
-  public Map<String, Object> fromObject(V value, Map<String, Object> propertyValues)
+  public Map<String, Object> fromOriginObject(V value, Map<String, Object> propertyValues)
   {
     propertyValues.clear();
     for( Map.Entry<String, Getter<V,Object> > entry : getterMap.entrySet() )
@@ -39,11 +39,11 @@ public class ObjectKeyValuePropertiesConverter<V> implements ObjectPropertiesCon
   }
 
   @Override
-  public V toObject(Map<String, Object> propertyValues)
+  public V toOriginObject(Map<String, Object> propertyValues)
   {
     try
     {
-      return toObject( propertyValues, objectClass.newInstance() );
+      return toOriginObject( propertyValues, objectClass.newInstance() );
     }
     catch( Exception e )
     {
@@ -52,7 +52,7 @@ public class ObjectKeyValuePropertiesConverter<V> implements ObjectPropertiesCon
   }
 
   @Override
-  public V toObject(Map<String, Object> propertyValues, V value )
+  public V toOriginObject(Map<String, Object> propertyValues, V value )
   {
     for( Map.Entry<String, Setter<V,Object> > entry : setterMap.entrySet() )
     {

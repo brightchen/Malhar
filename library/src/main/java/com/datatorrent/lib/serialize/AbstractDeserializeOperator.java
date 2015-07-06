@@ -1,4 +1,4 @@
-package com.datatorrent.contrib.serialize;
+package com.datatorrent.lib.serialize;
 
 
 import com.datatorrent.api.DefaultInputPort;

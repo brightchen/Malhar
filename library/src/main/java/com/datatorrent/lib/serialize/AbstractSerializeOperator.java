@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.datatorrent.contrib.serialize;
+package com.datatorrent.lib.serialize;
 
 
 import com.datatorrent.api.Context.OperatorContext;
@@ -31,22 +31,22 @@ import com.datatorrent.common.util.Pair;
  * @category Serialize
  * @tags serialize
  */
-public abstract class AbstractSerializeOperator<T> extends BaseOperator
+public abstract class AbstractSerializeOperator<I,O> extends BaseOperator
 {
   private static final long serialVersionUID = 8889926964088708083L;
 
   /**
    * Output port that emits tuples into the DAG.
    */
-  public final transient DefaultOutputPort<Pair<String,byte[]>> outputPort = new DefaultOutputPort<Pair<String,byte[]>>();
+  public final transient DefaultOutputPort<O> outputPort = new DefaultOutputPort<O>();
   
   /**
    * The input port on which tuples are received
    */
   @InputPortFieldAnnotation(optional = true)
-  public final transient DefaultInputPort<T> inputPort = new DefaultInputPort<T>() {
+  public final transient DefaultInputPort<I> inputPort = new DefaultInputPort<I>() {
     @Override
-    public void process(T t)
+    public void process(I t)
     {
       processTuple(t);
     }
@@ -73,11 +73,11 @@ public abstract class AbstractSerializeOperator<T> extends BaseOperator
    * @param tuple
    *          a tuple.
    */
-  public void processTuple(T tuple)
-  {
-    outputPort.emit( new Pair<String,byte[]>( getKey( tuple ), serialize( tuple ) ) );
-  }
-  
-  protected abstract byte[] serialize( T tuple );
-  protected abstract String getKey( T tuple );
+  public abstract void processTuple(I tuple);
+//  {
+//    outputPort.emit( new Pair<String,byte[]>( getKey( tuple ), serialize( tuple ) ) );
+//  }
+//  
+//  protected abstract byte[] serialize( T tuple );
+//  protected abstract String getKey( T tuple );
 }

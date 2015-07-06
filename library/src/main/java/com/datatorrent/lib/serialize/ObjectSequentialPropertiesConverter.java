@@ -1,4 +1,4 @@
-package com.datatorrent.contrib.util;
+package com.datatorrent.lib.serialize;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,7 +29,7 @@ public class ObjectSequentialPropertiesConverter<V> implements ObjectPropertiesC
   
 
   @Override
-  public List fromObject(V value, List propertyValues )
+  public List fromOriginObject(V value, List propertyValues )
   {
     propertyValues.clear();
     for( Getter<V,Object> getter : getters )
@@ -40,18 +40,18 @@ public class ObjectSequentialPropertiesConverter<V> implements ObjectPropertiesC
   }
   
   @Override
-  public List fromObject(V obj)
+  public List fromOriginObject(V obj)
   {
     List< Object > propertyValue = new ArrayList< Object >();
-    return fromObject( obj, propertyValue );
+    return fromOriginObject( obj, propertyValue );
   }
 
   @Override
-  public V toObject(List propertyValues)
+  public V toOriginObject(List propertyValues)
   {
     try
     {
-      return toObject( propertyValues, objectClass.newInstance() );
+      return toOriginObject( propertyValues, objectClass.newInstance() );
     }
     catch( Exception e )
     {
@@ -60,7 +60,7 @@ public class ObjectSequentialPropertiesConverter<V> implements ObjectPropertiesC
     
   }
   
-  public V toObject( List propertyValues, V value )
+  public V toOriginObject( List propertyValues, V value )
   {
     Iterator valueIter = propertyValues.iterator();
     for( Setter<V,Object> setter : setters )

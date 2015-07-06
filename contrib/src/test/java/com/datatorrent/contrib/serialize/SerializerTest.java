@@ -6,12 +6,12 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.datatorrent.contrib.util.ObjectPropertiesConverter.PropertyInfo;
-import com.datatorrent.contrib.util.Serializer;
-import com.datatorrent.contrib.util.SerializerFactory;
+import com.datatorrent.api.StreamCodec;
 import com.datatorrent.contrib.util.TestPOJO;
 import com.datatorrent.contrib.util.TupleGenerator;
-import com.datatorrent.contrib.util.DelegateSerializer.SerializerImplementer;
+import com.datatorrent.lib.codec.JavaSerializationStreamCodec;
+import com.datatorrent.lib.codec.KryoSerializableStreamCodec;
+import com.datatorrent.lib.serialize.SerializerFactory;
 
 public class SerializerTest
 {
@@ -20,26 +20,29 @@ public class SerializerTest
   @Test
   public void testSerializers()
   {
-    List<Serializer> serializers = getSerializers();
-    for( Serializer serializer : serializers )
+    List<StreamCodec> serializers = getSerializers();
+    for( StreamCodec serializer : serializers )
     {
       for( int j=0; j<TUPLE_SIZE; ++j )
       {
         TestPOJO obj = getNextTuple();
-        Assert.assertTrue( serializer.getClass().getSimpleName(), obj.equals( serializer.deserialize( serializer.serialize(obj) ) ) );
+        Assert.assertTrue( serializer.getClass().getSimpleName(), obj.equals( serializer.fromByteArray( serializer.toByteArray(obj) ) ) );
       }
     }
     
   }
   
-  public List<Serializer> getSerializers()
+  public List<StreamCodec> getSerializers()
   {
-    List<Serializer> serializers = new ArrayList<Serializer>();
-    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, SerializerImplementer.KRYO, null ) );
-    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, SerializerImplementer.JAVA, null ) );
+    List<StreamCodec> serializers = new ArrayList<StreamCodec>();
+    StreamCodec kryoCodec = new KryoSerializableStreamCodec();
+    StreamCodec javaCodec = new JavaSerializationStreamCodec();
 
-    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, SerializerImplementer.KRYO, TestPOJO.getPropertyInfos() ) );
-    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, SerializerImplementer.JAVA, TestPOJO.getPropertyInfos() ) );
+    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, kryoCodec, null ) );
+    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, javaCodec, null ) );
+
+    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, kryoCodec, TestPOJO.getPropertyInfos() ) );
+    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, javaCodec, TestPOJO.getPropertyInfos() ) );
 
     return serializers;
   }

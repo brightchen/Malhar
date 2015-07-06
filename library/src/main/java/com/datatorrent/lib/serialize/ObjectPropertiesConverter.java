@@ -1,16 +1,16 @@
-package com.datatorrent.contrib.util;
+package com.datatorrent.lib.serialize;
 
 
 /**
  * 
  * This interface provides methods to convert Object to another Object which represented by its properties
  *
- * @param <V> the type of the object
- * @param <P> the type of the object which keep properties
+ * @param <O> the type of the object
+ * @param <C> the type of the object converted to
  */
-public interface ObjectPropertiesConverter< V, P>
+public interface ObjectPropertiesConverter< O, C>
 {
-  public P fromObject( V obj );
+  public C fromOriginObject( O obj );
   
   /**
    * This method same as <code>fromObject( Object obj )</code>. 
@@ -19,11 +19,11 @@ public interface ObjectPropertiesConverter< V, P>
    * @param propertyValues
    * @return
    */
-  public P fromObject( V value, P propertyValues );
+  public C fromOriginObject( O value, C propertyValues );
   
-  public V toObject( P propertyValues );
+  public O toOriginObject( C propertyValues );
   
-  public V toObject( P propertyValues, V value );
+  public O toOriginObject( C propertyValues, O value );
   
   
 
