@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.datatorrent.lib.serialize;
+package com.datatorrent.lib.converter;
 
 import com.datatorrent.api.StreamCodec;
 import com.datatorrent.common.util.Pair;
 import com.datatorrent.lib.codec.KryoSerializableStreamCodec;
-import com.datatorrent.lib.serialize.ObjectPropertiesConverter.PropertyInfo;
 import com.datatorrent.lib.util.PojoUtils.Getter;
 
 /**
@@ -31,7 +30,7 @@ import com.datatorrent.lib.util.PojoUtils.Getter;
  * 
  * This class implement how to serialize the value
  */
-public class POJOSerializeOperator extends AbstractPOJOKeyValueSerializeOperator< Pair<String, byte[] >, String >
+public class POJOSerializeOperator extends AbstractPOJOKeyValueConverterOperator< Pair<String, byte[] >, String >
 {
   private static final long serialVersionUID = -2339881909844710454L;
   
@@ -48,7 +47,7 @@ public class POJOSerializeOperator extends AbstractPOJOKeyValueSerializeOperator
   {
     if( serializer != null )
       return serializer;
-    serializer = SerializerFactory.getSerializer( tuple.getClass(), codecImplementer, propertyInfos );
+    //serializer = ConverterFactory.getConverter( tuple.getClass(), codecImplementer, propertyInfos );
     return serializer;
   }
   

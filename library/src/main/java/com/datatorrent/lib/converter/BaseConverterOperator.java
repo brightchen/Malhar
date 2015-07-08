@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.datatorrent.lib.serialize;
+package com.datatorrent.lib.converter;
 
 
 import com.datatorrent.api.Context.OperatorContext;
@@ -21,32 +21,32 @@ import com.datatorrent.api.DefaultInputPort;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.annotation.InputPortFieldAnnotation;
 import com.datatorrent.common.util.BaseOperator;
-import com.datatorrent.common.util.Pair;
 
 /**
  * 
- * The operator serialize the POJO
+ * The operator convert the tuples
+ * the sub-class can override <code>createConverter</code> or <code>createConverter( Class<S> tupleClass )</code> 
+ * to set the converter. And the client can use <code>setConverter</code> to set the converter
  * 
- * @displayName Abstract Serialize
- * @category Serialize
- * @tags serialize
+ * @displayName Abstract Converter
+ * @category Converter
+ * @tags converter
  */
-public abstract class AbstractSerializeOperator<I,O> extends BaseOperator
+public class BaseConverterOperator<S, T> extends BaseOperator
 {
-  private static final long serialVersionUID = 8889926964088708083L;
-
   /**
    * Output port that emits tuples into the DAG.
    */
-  public final transient DefaultOutputPort<O> outputPort = new DefaultOutputPort<O>();
+  public final transient DefaultOutputPort<T> outputPort = new DefaultOutputPort<T>();
   
+  protected Converter<S, T> converter;
   /**
    * The input port on which tuples are received
    */
   @InputPortFieldAnnotation(optional = true)
-  public final transient DefaultInputPort<I> inputPort = new DefaultInputPort<I>() {
+  public final transient DefaultInputPort<S> inputPort = new DefaultInputPort<S>() {
     @Override
-    public void process(I t)
+    public void process(S t)
     {
       processTuple(t);
     }
@@ -55,6 +55,8 @@ public abstract class AbstractSerializeOperator<I,O> extends BaseOperator
   @Override
   public void setup(OperatorContext context)
   {
+    if( converter == null )
+      createConverter();
   }
 
   @Override
@@ -73,11 +75,22 @@ public abstract class AbstractSerializeOperator<I,O> extends BaseOperator
    * @param tuple
    *          a tuple.
    */
-  public abstract void processTuple(I tuple);
-//  {
-//    outputPort.emit( new Pair<String,byte[]>( getKey( tuple ), serialize( tuple ) ) );
-//  }
-//  
-//  protected abstract byte[] serialize( T tuple );
-//  protected abstract String getKey( T tuple );
+  @SuppressWarnings("unchecked")
+  public void processTuple(S tuple)
+  {
+    if( converter == null )
+      createConverter( (Class<S>)tuple.getClass() );
+    outputPort.emit( converter.convert( tuple ) );
+  }
+  
+  protected void createConverter(){}
+  
+  protected void createConverter( Class<S> tupleClass ){}
+
+  public Converter<S, T> getConverter()
+  {
+    return converter;
+  }
+
+  
 }

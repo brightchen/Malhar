@@ -1,4 +1,4 @@
-package com.datatorrent.lib.serialize;
+package com.datatorrent.lib.converter;
 
 import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.common.util.Pair;
@@ -8,13 +8,9 @@ import com.datatorrent.lib.util.PojoUtils.Getter;
 /**
  * 
  * The input of this Operator is POJO, and the output is the key-value
- * this class implemented
- *   - how to get the key: use <code>keyGetter<c/ode> to get value from input tuple by <code>keyExpression</code>
- *   - how to generate the output tuple: use keyValueSetter to set the key and value to the outputTuple. 
- *     note, the outputTuple must have default constructor.
- *
+ * 
  */
-public abstract class AbstractPOJOKeyValueSerializeOperator< O, K > extends AbstractSerializeOperator< Object, O >
+public abstract class AbstractPOJOKeyValueConverterOperator< O, K > extends BaseConverterOperator< Object, O >
 {
   public static interface KeyValueSetter< O, K >
   {

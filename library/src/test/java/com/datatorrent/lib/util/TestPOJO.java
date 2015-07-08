@@ -1,45 +1,22 @@
-/**
- * Copyright (C) 2015 DataTorrent, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.datatorrent.contrib.util;
+package com.datatorrent.lib.util;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.hadoop.hbase.util.Bytes;
-
-import com.datatorrent.contrib.util.FieldInfo;
-import com.datatorrent.contrib.util.FieldInfo.SupportType;
 import com.datatorrent.lib.converter.PropertyInfo;
 
-
+/**
+ * This is a copy from contrib, should be merged later.
+ * 
+ */
 public class TestPOJO implements Serializable
 {
   private static final long serialVersionUID = 2153417121590225192L;
 
-  public static List<FieldInfo> getFieldsInfo()
-  {
-    List<FieldInfo> fieldsInfo = new ArrayList<FieldInfo>();
-    fieldsInfo.add( new FieldInfo( "name", "name", SupportType.STRING ) );
-    fieldsInfo.add( new FieldInfo( "age", "age", SupportType.INTEGER ) );
-    fieldsInfo.add( new FieldInfo( "address", "address", SupportType.STRING ) );
-    
-    return fieldsInfo;
-  }
+
   
   public static PropertyInfo[] getPropertyInfos()
   {
@@ -62,7 +39,7 @@ public class TestPOJO implements Serializable
     TestPOJO testPOJO = new TestPOJO();
     for( Map.Entry<String, byte[]> entry : map.entrySet() )
     {
-      testPOJO.setValue(entry.getKey(), entry.getValue() );
+      //testPOJO.setValue(entry.getKey(), entry.getValue() );
     }
     return testPOJO;
   }
@@ -87,29 +64,6 @@ public class TestPOJO implements Serializable
     setAddress(address);
   }
   
-  public void setValue( String fieldName, byte[] value )
-  {
-    if( "row".equalsIgnoreCase(fieldName) )
-    {
-      setRow( Bytes.toString(value) );
-      return;
-    }
-    if( "name".equalsIgnoreCase(fieldName))
-    {
-      setName( Bytes.toString(value));
-      return;
-    }
-    if( "address".equalsIgnoreCase(fieldName))
-    {
-      setAddress( Bytes.toString(value));
-      return;
-    }
-    if( "age".equalsIgnoreCase(fieldName))
-    {
-      setAge( Bytes.toInt(value) );
-      return;
-    }
-  }
 
   public String getRow()
   {

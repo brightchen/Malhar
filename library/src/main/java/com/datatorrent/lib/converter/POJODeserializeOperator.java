@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.datatorrent.lib.serialize;
+package com.datatorrent.lib.converter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.datatorrent.api.StreamCodec;
 import com.datatorrent.lib.codec.KryoSerializableStreamCodec;
-import com.datatorrent.lib.serialize.ObjectPropertiesConverter.PropertyInfo;
 import com.datatorrent.netlet.util.Slice;
 
 /**
@@ -59,7 +58,7 @@ public class POJODeserializeOperator  extends AbstractDeserializeOperator< Objec
   {
     if( serializer != null )
       return serializer;
-    serializer = SerializerFactory.getSerializer( tupleType, codecImplementer, propertyInfos );
+    //serializer = ConverterFactory.getConverter( tupleType, codecImplementer, propertyInfos );
     return serializer;
   }
   

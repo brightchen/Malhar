@@ -1,4 +1,4 @@
-package com.datatorrent.contrib.serialize;
+package com.datatorrent.lib.converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.datatorrent.api.StreamCodec;
-import com.datatorrent.contrib.util.TestPOJO;
-import com.datatorrent.contrib.util.TupleGenerator;
 import com.datatorrent.lib.codec.JavaSerializationStreamCodec;
 import com.datatorrent.lib.codec.KryoSerializableStreamCodec;
-import com.datatorrent.lib.serialize.SerializerFactory;
+import com.datatorrent.lib.converter.ConverterFactory;
+import com.datatorrent.lib.util.TestPOJO;
+import com.datatorrent.lib.util.TupleGenerator;
 
 public class SerializerTest
 {
@@ -38,11 +38,11 @@ public class SerializerTest
     StreamCodec kryoCodec = new KryoSerializableStreamCodec();
     StreamCodec javaCodec = new JavaSerializationStreamCodec();
 
-    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, kryoCodec, null ) );
-    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, javaCodec, null ) );
-
-    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, kryoCodec, TestPOJO.getPropertyInfos() ) );
-    serializers.add( SerializerFactory.getSerializer( TestPOJO.class, javaCodec, TestPOJO.getPropertyInfos() ) );
+//    serializers.add( ConverterFactory.getConverter( TestPOJO.class, kryoCodec, null ) );
+//    serializers.add( ConverterFactory.getConverter( TestPOJO.class, javaCodec, null ) );
+//
+//    serializers.add( ConverterFactory.getConverter( TestPOJO.class, kryoCodec, TestPOJO.getPropertyInfos() ) );
+//    serializers.add( ConverterFactory.getConverter( TestPOJO.class, javaCodec, TestPOJO.getPropertyInfos() ) );
 
     return serializers;
   }

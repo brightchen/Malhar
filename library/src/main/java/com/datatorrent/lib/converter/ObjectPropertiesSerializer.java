@@ -1,4 +1,4 @@
-package com.datatorrent.lib.serialize;
+package com.datatorrent.lib.converter;
 
 import com.datatorrent.api.StreamCodec;
 import com.datatorrent.lib.codec.KryoSerializableStreamCodec;

@@ -1,4 +1,4 @@
-package com.datatorrent.contrib.serialize;
+package com.datatorrent.lib.converter;
 
 import java.util.List;
 
@@ -12,14 +12,11 @@ import com.datatorrent.api.DAG;
 import com.datatorrent.api.DAG.Locality;
 import com.datatorrent.api.LocalMode;
 import com.datatorrent.api.StreamingApplication;
-import com.datatorrent.contrib.util.TestPOJO;
-import com.datatorrent.contrib.util.TupleCacheOutputOperator;
-import com.datatorrent.contrib.util.TupleGenerateCacheOperator;
-import com.datatorrent.lib.serialize.POJODeserializeOperator;
-import com.datatorrent.lib.serialize.POJOSerializeOperator;
+import com.datatorrent.lib.util.TestPOJO;
 
 public class POJOSerializeOperatorTest
 {
+  /*********************
   public static enum OPERATOR
   {
     GENERATOR,
@@ -112,4 +109,5 @@ public class POJOSerializeOperatorTest
       Assert.assertTrue( "Not equal.", generatedTuples.get(i).completeEquals(receivedTuples.get(i)) );
     }
   }
+  /*********************/
 }
