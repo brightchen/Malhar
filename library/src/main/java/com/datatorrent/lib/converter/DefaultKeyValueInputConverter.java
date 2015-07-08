@@ -19,9 +19,9 @@ public class DefaultKeyValueInputConverter<T> implements Converter<Pair<String, 
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public DefaultKeyValueInputConverter(String setExpression, StreamCodec<T> streamCodec)
+  public DefaultKeyValueInputConverter(String keySetExpression, StreamCodec<T> streamCodec)
   {
-    setKeyConverter(new SinglePropertyToObjectConverter(setExpression));
+    setKeyConverter(new SinglePropertyToObjectConverter(keySetExpression));
     setValueConverter(new StreamDecodeConverter(streamCodec));
   }
 

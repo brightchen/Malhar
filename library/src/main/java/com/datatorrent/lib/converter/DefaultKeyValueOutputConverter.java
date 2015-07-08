@@ -19,9 +19,9 @@ public class DefaultKeyValueOutputConverter<S> extends AbstractObjectToKeyValueC
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public DefaultKeyValueOutputConverter(String getExpression, StreamCodec<S> streamCodec)
+  public DefaultKeyValueOutputConverter(String keyGetExpression, StreamCodec<S> streamCodec)
   {
-    setKeyConverter(new ObjectToSinglePropertyConverter(getExpression, Pair.class));
+    setKeyConverter(new ObjectToSinglePropertyConverter(keyGetExpression, String.class));
     setValueConverter(new StreamCodeConverter(streamCodec));
   }
 

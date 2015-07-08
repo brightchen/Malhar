@@ -7,6 +7,8 @@ public class StreamDecodeConverter<T> implements Converter<Slice, T>
 {
   private StreamCodec<T> streamCodec;
   
+  public StreamDecodeConverter(){}
+  
   public StreamDecodeConverter(StreamCodec<T> streamCodec)
   {
     setStreamCodec(streamCodec);

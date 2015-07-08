@@ -11,12 +11,15 @@ import org.slf4j.LoggerFactory;
 import com.datatorrent.api.DAG;
 import com.datatorrent.api.DAG.Locality;
 import com.datatorrent.api.LocalMode;
+import com.datatorrent.api.StreamCodec;
 import com.datatorrent.api.StreamingApplication;
+import com.datatorrent.lib.codec.KryoSerializableStreamCodec;
 import com.datatorrent.lib.util.TestPOJO;
+import com.datatorrent.lib.util.TupleCacheOutputOperator;
+import com.datatorrent.lib.util.TupleGenerateCacheOperator;
 
 public class POJOConvertOperatorTest
 {
-  /***********************
   public static enum OPERATOR
   {
     GENERATOR,
@@ -51,25 +54,27 @@ public class POJOConvertOperatorTest
       }
     };
 
+    final StreamCodec<TestPOJO> streamCodec = new KryoSerializableStreamCodec<TestPOJO>();
     DAG dag = lma.getDAG();
 
     // Create ActiveMQStringSinglePortOutputOperator
     MyGenerator generator = dag.addOperator( OPERATOR.GENERATOR.name(), MyGenerator.class);
     generator.setTupleNum( TUPLE_NUM );
     
-    POJOSerializeOperator serializeOperator = dag.addOperator("SerializeOperator", POJOSerializeOperator.class);
-    serializeOperator.setKeyExpression( TestPOJO.getRowExpression() );
-    serializeOperator.setPropertyInfos( TestPOJO.getPropertyInfos() );
     
-    POJODeserializeOperator deserializeOperator = dag.addOperator("DeserializeOperator", POJODeserializeOperator.class);
-    deserializeOperator.setTupleType(TestPOJO.class);
-    deserializeOperator.setPropertyInfos( TestPOJO.getPropertyInfos() );
+    POJOConvertOperator serializeOperator = dag.addOperator(OPERATOR.SERIALIZER.name(), POJOConvertOperator.class);
+    serializeOperator.setConverter( new DefaultKeyValueOutputConverter(TestPOJO.getRowExpression(), streamCodec) );
+    
+    
+    POJOConvertOperator deserializeOperator = dag.addOperator(OPERATOR.DESERIALIZER.name(), POJOConvertOperator.class);
+    deserializeOperator.setConverter(new DefaultKeyValueInputConverter(TestPOJO.getRowExpression(), streamCodec));
+
     
     TupleCacheOutputOperator output = dag.addOperator(OPERATOR.OUTPUT.name(), TupleCacheOutputOperator.class);
     
     // Connect ports
     dag.addStream("queue1", generator.outputPort, serializeOperator.inputPort ).setLocality(Locality.CONTAINER_LOCAL);
-    dag.addStream("queue2", serializeOperator.outputPort, deserializeOperator.pairInputPort ).setLocality(Locality.CONTAINER_LOCAL);
+    dag.addStream("queue2", serializeOperator.outputPort, deserializeOperator.inputPort ).setLocality(Locality.CONTAINER_LOCAL);
     dag.addStream("queue3", deserializeOperator.outputPort, output.inputPort ).setLocality(Locality.CONTAINER_LOCAL);
     
     
@@ -109,5 +114,4 @@ public class POJOConvertOperatorTest
       Assert.assertTrue( "Not equal.", generatedTuples.get(i).completeEquals(receivedTuples.get(i)) );
     }
   }
-  /***********************/
 }
