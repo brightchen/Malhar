@@ -25,11 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.datatorrent.contrib.util.*;
-
 import com.datatorrent.api.DAG;
 import com.datatorrent.api.DefaultOutputPort;
-
 import com.datatorrent.common.util.Pair;
+import com.datatorrent.lib.util.FieldInfo;
+import com.datatorrent.lib.util.FieldValueSerializableGenerator;
+import com.datatorrent.lib.util.POJOTupleGenerateOperator;
+import com.datatorrent.lib.util.TestPOJO;
+import com.datatorrent.lib.util.TupleGenerator;
 
 @SuppressWarnings("rawtypes")
 public class KinesisByteArrayOutputOperatorTest extends KinesisOutputOperatorTest<KinesisByteArrayOutputOperator, POJOTupleGenerateOperator>

@@ -1,22 +1,46 @@
+/**
+ * Copyright (C) 2015 DataTorrent, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.datatorrent.lib.util;
 
-
 import java.io.Serializable;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.datatorrent.lib.converter.PropertyInfo;
+import com.datatorrent.lib.util.FieldInfo.SupportType;
 
-/**
- * This is a copy from contrib, should be merged later.
- * 
- */
+
 public class TestPOJO implements Serializable
 {
   private static final long serialVersionUID = 2153417121590225192L;
+  private static final String UTF8_ENCODING = "UTF-8";
+  private static final Charset UTF8_CHARSET = Charset.forName(UTF8_ENCODING);
+  public static final int SIZEOF_INT = Integer.SIZE / Byte.SIZE;
 
-
+  public static List<FieldInfo> getFieldsInfo()
+  {
+    List<FieldInfo> fieldsInfo = new ArrayList<FieldInfo>();
+    fieldsInfo.add( new FieldInfo( "name", "name", SupportType.STRING ) );
+    fieldsInfo.add( new FieldInfo( "age", "age", SupportType.INTEGER ) );
+    fieldsInfo.add( new FieldInfo( "address", "address", SupportType.STRING ) );
+    
+    return fieldsInfo;
+  }
   
   public static PropertyInfo[] getPropertyInfos()
   {
@@ -39,7 +63,7 @@ public class TestPOJO implements Serializable
     TestPOJO testPOJO = new TestPOJO();
     for( Map.Entry<String, byte[]> entry : map.entrySet() )
     {
-      //testPOJO.setValue(entry.getKey(), entry.getValue() );
+      testPOJO.setValue(entry.getKey(), entry.getValue() );
     }
     return testPOJO;
   }
@@ -64,6 +88,29 @@ public class TestPOJO implements Serializable
     setAddress(address);
   }
   
+  public void setValue( String fieldName, byte[] value )
+  {
+    if( "row".equalsIgnoreCase(fieldName) )
+    {
+      setRow( new String(value, UTF8_CHARSET) );
+      return;
+    }
+    if( "name".equalsIgnoreCase(fieldName))
+    {
+      setName( new String(value, UTF8_CHARSET) );
+      return;
+    }
+    if( "address".equalsIgnoreCase(fieldName))
+    {
+      setAddress( new String(value, UTF8_CHARSET) );
+      return;
+    }
+    if( "age".equalsIgnoreCase(fieldName))
+    {
+      setAge( toInt(value) );
+      return;
+    }
+  }
 
   public String getRow()
   {
@@ -159,5 +206,15 @@ public class TestPOJO implements Serializable
   public String toString()
   {
     return String.format( "id={%d}; name={%s}; age={%d}; address={%s}", rowId, name, age, address);
+  }
+  
+  public static int toInt(byte[] bytes)
+  {
+    int n = 0;
+    for (int i = 0; i < bytes.length; i++) {
+      n <<= 8;
+      n ^= bytes[i] & 0xFF;
+    }
+    return n;
   }
 }

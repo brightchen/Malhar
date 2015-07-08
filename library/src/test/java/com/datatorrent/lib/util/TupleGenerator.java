@@ -1,4 +1,4 @@
-package com.datatorrent.contrib.util;
+package com.datatorrent.lib.util;
 
 
 import java.lang.reflect.Constructor;

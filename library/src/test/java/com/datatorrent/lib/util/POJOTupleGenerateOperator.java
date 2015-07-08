@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package com.datatorrent.contrib.util;
+package com.datatorrent.lib.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,7 +23,6 @@ import com.datatorrent.api.Context.OperatorContext;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.api.InputOperator;
 import com.datatorrent.api.Operator.ActivationListener;
-import com.datatorrent.contrib.util.TupleGenerator;
 
 /**
  * @param <T> the type of tuple
