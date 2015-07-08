@@ -12,11 +12,8 @@ import com.datatorrent.netlet.util.Slice;
  * @param <S>
  * @param <T>
  */
-public class DefaultKeyValueOutputConverter<S> implements Converter<S, Pair<String, Slice>>
+public class DefaultKeyValueOutputConverter<S> extends AbstractObjectToKeyValueConverter<S, Pair<String, Slice>, String, Slice>
 {
-  protected Converter<S, String> keyConverter;
-  protected Converter<S, Slice> valueConverter;
-
   public DefaultKeyValueOutputConverter()
   {
   }
@@ -29,19 +26,9 @@ public class DefaultKeyValueOutputConverter<S> implements Converter<S, Pair<Stri
   }
 
   @Override
-  public Pair<String, Slice> convert(S sourceObj)
+  protected Pair<String, Slice> createTargetObject(String key, Slice value)
   {
-    return new Pair<String, Slice>(keyConverter.convert(sourceObj), valueConverter.convert(sourceObj));
-  }
-
-  public void setKeyConverter(Converter<S, String> keyConverter)
-  {
-    this.keyConverter = keyConverter;
-  }
-
-  public void setValueConverter(Converter<S, Slice> valueConverter)
-  {
-    this.valueConverter = valueConverter;
+    return new Pair<String, Slice>( key, value );
   }
 
 }

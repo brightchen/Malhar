@@ -28,11 +28,14 @@ import com.datatorrent.common.util.BaseOperator;
  * the sub-class can override <code>createConverter</code> or <code>createConverter( Class<S> tupleClass )</code> 
  * to set the converter. And the client can use <code>setConverter</code> to set the converter
  * 
+ * Usually, it is not necessary to create sub operators as all the functionality delegate to the converter.
+ * We only need to implement converter if new function required.
+ * 
  * @displayName Abstract Converter
  * @category Converter
  * @tags converter
  */
-public class BaseConverterOperator<S, T> extends BaseOperator
+public class BaseConvertOperator<S, T> extends BaseOperator
 {
   /**
    * Output port that emits tuples into the DAG.
@@ -87,10 +90,10 @@ public class BaseConverterOperator<S, T> extends BaseOperator
   
   protected void createConverter( Class<S> tupleClass ){}
 
-  public Converter<S, T> getConverter()
+  
+  public void setConverter(Converter<S, T> converter)
   {
-    return converter;
+    this.converter = converter;
   }
 
-  
 }

@@ -14,9 +14,9 @@ import com.datatorrent.api.LocalMode;
 import com.datatorrent.api.StreamingApplication;
 import com.datatorrent.lib.util.TestPOJO;
 
-public class POJOSerializeOperatorTest
+public class POJOConvertOperatorTest
 {
-  /*********************
+  /***********************
   public static enum OPERATOR
   {
     GENERATOR,
@@ -25,7 +25,7 @@ public class POJOSerializeOperatorTest
     OUTPUT
   };
   
-  private static final Logger logger = LoggerFactory.getLogger( POJOSerializeOperatorTest.class );
+  private static final Logger logger = LoggerFactory.getLogger( POJOConvertOperatorTest.class );
   
   private static final int TUPLE_NUM = 10;
   
@@ -109,5 +109,5 @@ public class POJOSerializeOperatorTest
       Assert.assertTrue( "Not equal.", generatedTuples.get(i).completeEquals(receivedTuples.get(i)) );
     }
   }
-  /*********************/
+  /***********************/
 }
