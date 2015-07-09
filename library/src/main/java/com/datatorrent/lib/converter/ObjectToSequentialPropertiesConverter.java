@@ -1,21 +1,33 @@
+/**
+ * Copyright (C) 2015 DataTorrent, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.datatorrent.lib.converter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.datatorrent.common.util.Pair;
-import com.datatorrent.lib.util.PojoUtils;
 import com.datatorrent.lib.util.PojoUtils.Getter;
 
 @SuppressWarnings("rawtypes")
-public class ObjectToSequentialPropertiesConverter<S> implements Converter<S, List>, ShareableConverter<S, List>
+public class ObjectToSequentialPropertiesConverter<S> extends ObjectPropertiesHolder<S> implements Converter<S, List>, ShareableConverter<S, List>
 {
-  protected List< Getter<S,Object> > getters = new ArrayList< Getter<S,Object> >();
-  protected Class<S> sourceObjectClass;
+  public ObjectToSequentialPropertiesConverter(){}
 
-  public ObjectToSequentialPropertiesConverter( Class<S> sourceObjectClass )
+  public ObjectToSequentialPropertiesConverter(PropertyInfo ... properties)
   {
-    this.sourceObjectClass = sourceObjectClass;
+    addProperties(properties);
   }
 
   @Override
@@ -28,6 +40,8 @@ public class ObjectToSequentialPropertiesConverter<S> implements Converter<S, Li
   @SuppressWarnings("unchecked")
   public List convertTo(S sourceObj, List propertyValues )
   {
+    if( getters == null || getters.isEmpty() )
+      generateGetters((Class<S>)sourceObj.getClass());
     propertyValues.clear();
     for( Getter<S,Object> getter : getters )
     {
@@ -36,40 +50,4 @@ public class ObjectToSequentialPropertiesConverter<S> implements Converter<S, Li
     return propertyValues;
   }
   
-
-  public void setProperties( PropertyInfo ... properties )
-  {
-    getters.clear();
-    addProperties( properties );
-  }
-
-  public void addProperties( PropertyInfo ... properties )
-  {
-    for( PropertyInfo element : properties )
-    {
-      addProperty( element.getExpression(), element.getType() );
-    }
-  }
-
-  public void setProperties( Pair<String, Class> ... properties )
-  {
-    getters.clear();
-    addProperties( properties );
-  }
-  
-  public void addProperties( Pair<String, Class> ... properties )
-  {
-    for( Pair<String,Class> element : properties )
-    {
-      addProperty( element.getFirst(), element.getSecond() );
-    }
-  }
-  
-  @SuppressWarnings("unchecked")
-  public void addProperty( String expression, Class type )
-  {
-    Getter<S,Object> getter = PojoUtils.createGetter( sourceObjectClass, expression, type );
-    getters.add(getter);
-  }
- 
 }

@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 DataTorrent, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.datatorrent.lib.converter;
 
 import java.util.ArrayList;
@@ -21,12 +36,20 @@ public class ObjectSequentialPropertiesConverter<V> implements ObjectPropertiesC
   private List< Getter<V,Object> > getters = new ArrayList< Getter<V,Object> >();
   private List< Setter<V,Object> > setters = new ArrayList< Setter<V,Object> >();
   
-  private Class<V> objectClass;
-  public ObjectSequentialPropertiesConverter( Class<V> objectClass )
+  private Class<V> sourceObjectClass;
+  
+  public ObjectSequentialPropertiesConverter(){}
+  
+  public ObjectSequentialPropertiesConverter( Class<V> sourceObjectClass )
   {
-    this.objectClass = objectClass;
+    this.setSourceObjectClass(sourceObjectClass);
   }
   
+  public ObjectSequentialPropertiesConverter( Class<V> objectClass, PropertyInfo ... properties )
+  {
+    setSourceObjectClass(objectClass);
+    setProperties(properties);
+  }
 
   @Override
   public List fromOriginObject(V value, List propertyValues )
@@ -51,7 +74,7 @@ public class ObjectSequentialPropertiesConverter<V> implements ObjectPropertiesC
   {
     try
     {
-      return toOriginObject( propertyValues, objectClass.newInstance() );
+      return toOriginObject( propertyValues, sourceObjectClass.newInstance() );
     }
     catch( Exception e )
     {
@@ -88,6 +111,24 @@ public class ObjectSequentialPropertiesConverter<V> implements ObjectPropertiesC
     }
   }
   
+
+  public void setSourceObjectClass(Class<V> sourceObjectClass)
+  {
+    this.sourceObjectClass = sourceObjectClass;
+  }
+
+  public void setProperties(List<PropertyInfo> propertyInfos)
+  {
+    getters.clear();
+    addProperties(propertyInfos);
+  }
+
+  public void addProperties(List<PropertyInfo> propertyInfos)
+  {
+    for (PropertyInfo propertyInfo : propertyInfos) {
+      addProperty(propertyInfo.expression, propertyInfo.type);
+    }
+  }
   
   public void setProperties( Pair<String, Class> ... properties )
   {
@@ -108,12 +149,12 @@ public class ObjectSequentialPropertiesConverter<V> implements ObjectPropertiesC
   public void addProperty( String expression, Class type )
   {
     {
-      Getter<V,Object> getter = PojoUtils.createGetter( objectClass, expression, type );
+      Getter<V,Object> getter = PojoUtils.createGetter( sourceObjectClass, expression, type );
       getters.add(getter);
     }
     
     {
-      Setter<V,Object> setter = PojoUtils.createSetter( objectClass, expression, type );
+      Setter<V,Object> setter = PojoUtils.createSetter( sourceObjectClass, expression, type );
       setters.add(setter);
     }
   }

@@ -19,12 +19,12 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-public class TableInfo< T extends FieldInfo >
+public class TableInfo<T extends FieldInfo>
 {
-  //the row or id expression
+  // the row or id expression
   private String rowOrIdExpression;
 
-  //this class should be used in configuration which don't support Generic.
+  // this class should be used in configuration which don't support Generic.
   @NotNull
   private List<T> fieldsInfo;
 
@@ -44,21 +44,20 @@ public class TableInfo< T extends FieldInfo >
     this.rowOrIdExpression = rowOrIdExpression;
   }
 
-	/**
-	 * the field information. each field of the tuple related to on field info.
-	 */
-	public List<T> getFieldsInfo()
-	{
-		return fieldsInfo;
-	}
+  /**
+   * the field information. each field of the tuple related to on field info.
+   */
+  public List<T> getFieldsInfo()
+  {
+    return fieldsInfo;
+  }
 
-	/**
-	 * the field information. each field of the tuple related to on field info.
-	 */
-	public void setFieldsInfo(List<T> fieldsInfo)
-	{
-		this.fieldsInfo = fieldsInfo;
-	}
-  
-  
+  /**
+   * the field information. each field of the tuple related to on field info.
+   */
+  public void setFieldsInfo(List<T> fieldsInfo)
+  {
+    this.fieldsInfo = fieldsInfo;
+  }
+
 }
