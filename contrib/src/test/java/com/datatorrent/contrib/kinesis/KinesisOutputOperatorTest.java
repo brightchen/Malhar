@@ -18,20 +18,21 @@ package com.datatorrent.contrib.kinesis;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.hadoop.conf.Configuration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.hadoop.conf.Configuration;
-
-import com.datatorrent.api.*;
+import com.datatorrent.api.DAG;
 import com.datatorrent.api.DAG.Locality;
+import com.datatorrent.api.DefaultOutputPort;
+import com.datatorrent.api.LocalMode;
+import com.datatorrent.api.Operator;
+import com.datatorrent.api.StreamingApplication;
 
-/**
- *
- */
+
 @SuppressWarnings("rawtypes")
 public abstract class KinesisOutputOperatorTest< O extends AbstractKinesisOutputOperator, G extends Operator > extends KinesisOperatorTestBase
 {

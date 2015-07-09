@@ -17,14 +17,12 @@ package com.datatorrent.contrib.kinesis;
 
 import java.nio.ByteBuffer;
 
-import com.amazonaws.services.kinesis.model.Record;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datatorrent.contrib.util.*;
+import com.amazonaws.services.kinesis.model.Record;
 import com.datatorrent.api.DAG;
 import com.datatorrent.api.DefaultOutputPort;
 import com.datatorrent.common.util.Pair;

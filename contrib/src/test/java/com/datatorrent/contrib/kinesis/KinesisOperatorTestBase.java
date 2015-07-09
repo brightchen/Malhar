@@ -15,16 +15,16 @@
  */
 package com.datatorrent.contrib.kinesis;
 
+import org.junit.After;
+import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.kinesis.AmazonKinesisClient;
 import com.amazonaws.services.kinesis.model.CreateStreamRequest;
 import com.amazonaws.services.kinesis.model.ResourceInUseException;
-
-import org.junit.After;
-import org.junit.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is a base class setup/clean Kinesis testing environment for all the input/output test
