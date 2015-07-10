@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.datatorrent.contrib.util;
+package com.datatorrent.lib.util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datatorrent.lib.util.PojoUtils;
 import com.datatorrent.lib.util.PojoUtils.Getter;
 import com.datatorrent.lib.util.PojoUtils.Setter;
 
@@ -71,39 +70,36 @@ public class FieldValueGenerator<T extends FieldInfo>
     
     return instance;
   }
-	
-	/**
-	 * use FieldValueHandler handle the value
-	 * @param obj
-	 * @param fieldValueHandler
-	 * @return
-	 */
-	public void handleFieldsValue( Object obj,  FieldValueHandler fieldValueHandler )
-	{
-		for( Map.Entry< T, Getter<Object,Object>> entry : fieldGetterMap.entrySet() )
-		{
-			Getter<Object,Object> getter = entry.getValue();
-			if( getter != null )
-			{
-				Object value = getter.get(obj);
-				fieldValueHandler.handleFieldValue(entry.getKey(), value);
-			}
-		}
-	}
-	
-	 /**
+
+  /**
+   * use FieldValueHandler handle the value
+   * 
+   * @param obj
+   * @param fieldValueHandler
+   * @return
+   */
+  public void handleFieldsValue(Object obj, FieldValueHandler fieldValueHandler)
+  {
+    for (Map.Entry<T, Getter<Object, Object>> entry : fieldGetterMap.entrySet()) {
+      Getter<Object, Object> getter = entry.getValue();
+      if (getter != null) {
+        Object value = getter.get(obj);
+        fieldValueHandler.handleFieldValue(entry.getKey(), value);
+      }
+    }
+  }
+
+  /**
    * 
    * @param obj
    * @return a map from columnName to columnValue
    */
-  public Map<String, Object> getFieldsValueAsMap( Object obj )
+  public Map<String, Object> getFieldsValueAsMap(Object obj)
   {
-    Map< String, Object > fieldsValue = new HashMap< String, Object>();
-    for( Map.Entry< T, Getter<Object,Object>> entry : fieldGetterMap.entrySet() )
-    {
-      Getter<Object,Object> getter = entry.getValue();
-      if( getter != null )
-      {
+    Map<String, Object> fieldsValue = new HashMap<String, Object>();
+    for (Map.Entry<T, Getter<Object, Object>> entry : fieldGetterMap.entrySet()) {
+      Getter<Object, Object> getter = entry.getValue();
+      if (getter != null) {
         Object value = getter.get(obj);
         fieldsValue.put(entry.getKey().getColumnName(), value);
       }

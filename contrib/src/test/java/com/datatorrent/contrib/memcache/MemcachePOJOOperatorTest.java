@@ -19,10 +19,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.datatorrent.contrib.util.TableInfo;
-import com.datatorrent.contrib.util.TestPOJO;
-import com.datatorrent.contrib.util.TupleGenerator;
-
+import com.datatorrent.lib.util.TableInfo;
+import com.datatorrent.lib.util.TestPOJO;
+import com.datatorrent.lib.util.TupleGenerator;
 import com.datatorrent.netlet.util.DTThrowable;
 
 import net.spy.memcached.AddrUtil;
